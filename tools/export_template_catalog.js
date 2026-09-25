@@ -1,0 +1,24 @@
+/* Write app/template_catalog.json: English name + mood tags of every layout / enter / exit entry.
+   server.py sends these as Choice option descriptions to the TypeSafe Jev model (English reads best).
+   usage: node tools/export_template_catalog.js   (re-run after adding or renaming expression packs) */
+'use strict';
+const fs = require('fs'), vm = require('vm'), path = require('path');
+const root = path.resolve(__dirname, '..');
+const files = fs.readdirSync(path.join(root, 'src')).filter(f => f.endsWith('.js') && f !== '12_ui.js').sort();
+const context = vm.createContext({
+  window: {}, document: { createElement: () => ({ getContext: () => ({ measureText: () => ({ width: 100 }) }) }) },
+  console, Intl, URL, Map, Set, TextEncoder, TextDecoder, performance: { now: () => 0 }
+});
+for (const file of files) vm.runInContext(fs.readFileSync(path.join(root, 'src', file), 'utf8'), context, { filename: file });
+vm.runInContext(fs.readFileSync(path.join(root, 'app/english.js'), 'utf8'), context, { filename: 'english.js' });
+const J = context.window.J;
+const out = {};
+for (const group of ['layout', 'enter', 'exit']) {
+  out[group] = {};
+  for (const key of J.order(group)) {
+    const d = J.registry(group)[key];
+    out[group][key] = { name: d.name, tags: (d.tags || []).slice() };
+  }
+}
+fs.writeFileSync(path.join(root, 'app/template_catalog.json'), JSON.stringify(out, null, 0) + '\n');
+console.log(Object.fromEntries(Object.entries(out).map(([g, v]) => [g, Object.keys(v).length])));

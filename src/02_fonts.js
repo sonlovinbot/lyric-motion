@@ -7,31 +7,46 @@
 const JP_SANS_FB = '"Noto Sans JP","Noto Sans CJK JP","Hiragino Sans","Yu Gothic","Meiryo",sans-serif';
 const JP_SERIF_FB = '"Noto Serif JP","Noto Serif CJK JP","Hiragino Mincho ProN","Yu Mincho",serif';
 
-/* role catalogue: key -> {label, family, weight, kind} */
+/* role catalogue: key -> {label, family, weight, kind}
+   vi: a face of similar character used instead when the lyrics are Vietnamese — set only on families whose Google Fonts
+   build has no Vietnamese subset (checked against fonts.googleapis.com: those glyphs would otherwise fall back to
+   another font letter by letter, e.g. "Nh" in one face and "ữ" in another). */
 J.FONTS = {
   gothic_black:  { label: 'Noto Sans JP Black',        family: '"Noto Sans JP"', weight: 900, kind: 'gothic', fb: JP_SANS_FB, gf: 'Noto+Sans+JP:wght@300;500;700;900' },
   gothic_bold:   { label: 'Noto Sans JP Bold',         family: '"Noto Sans JP"', weight: 700, kind: 'gothic', fb: JP_SANS_FB, gf: 'Noto+Sans+JP:wght@300;500;700;900' },
   gothic_med:    { label: 'Noto Sans JP Medium',       family: '"Noto Sans JP"', weight: 500, kind: 'gothic', fb: JP_SANS_FB, gf: 'Noto+Sans+JP:wght@300;500;700;900' },
   gothic_light:  { label: 'Noto Sans JP Light',        family: '"Noto Sans JP"', weight: 300, kind: 'gothic', fb: JP_SANS_FB, gf: 'Noto+Sans+JP:wght@300;500;700;900' },
   dela:          { label: 'Dela Gothic One',           family: '"Dela Gothic One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Dela+Gothic+One' },
-  zenkaku:       { label: 'Zen Kaku Gothic New Black', family: '"Zen Kaku Gothic New"', weight: 900, kind: 'gothic', fb: JP_SANS_FB, gf: 'Zen+Kaku+Gothic+New:wght@900' },
-  mincho_black:  { label: 'Zen Old Mincho Black',      family: '"Zen Old Mincho"', weight: 900, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Zen+Old+Mincho:wght@900' },
+  zenkaku:       { label: 'Zen Kaku Gothic New Black', family: '"Zen Kaku Gothic New"', weight: 900, kind: 'gothic', fb: JP_SANS_FB, gf: 'Zen+Kaku+Gothic+New:wght@900',
+                   vi: { label: 'Be Vietnam Pro', family: '"Be Vietnam Pro"', weight: 900, gf: 'Be+Vietnam+Pro:wght@900' } },
+  mincho_black:  { label: 'Zen Old Mincho Black',      family: '"Zen Old Mincho"', weight: 900, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Zen+Old+Mincho:wght@900',
+                   vi: { label: 'Playfair Display', family: '"Playfair Display"', weight: 900, gf: 'Playfair+Display:wght@900' } },
   mincho_bold:   { label: 'Noto Serif JP Bold',        family: '"Noto Serif JP"', weight: 700, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Noto+Serif+JP:wght@300;500;700' },
   mincho:        { label: 'Noto Serif JP Medium',      family: '"Noto Serif JP"', weight: 500, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Noto+Serif+JP:wght@300;500;700' },
   mincho_light:  { label: 'Noto Serif JP Light',       family: '"Noto Serif JP"', weight: 300, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Noto+Serif+JP:wght@300;500;700' },
-  tokumin:       { label: 'Kaisei Tokumin',            family: '"Kaisei Tokumin"', weight: 800, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Kaisei+Tokumin:wght@800' },
+  tokumin:       { label: 'Kaisei Tokumin',            family: '"Kaisei Tokumin"', weight: 800, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Kaisei+Tokumin:wght@800',
+                   vi: { label: 'Noto Serif Display', family: '"Noto Serif Display"', weight: 800, gf: 'Noto+Serif+Display:wght@800' } },
   round:         { label: 'M PLUS Rounded 1c',         family: '"M PLUS Rounded 1c"', weight: 800, kind: 'round', fb: JP_SANS_FB, gf: 'M+PLUS+Rounded+1c:wght@800' },
-  pop:           { label: 'Mochiy Pop One',            family: '"Mochiy Pop One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Mochiy+Pop+One' },
-  dot:           { label: 'DotGothic16',               family: '"DotGothic16"', weight: 400, kind: 'pixel', fb: JP_SANS_FB, gf: 'DotGothic16' },
-  brush:         { label: 'Yuji Syuku',                family: '"Yuji Syuku"', weight: 400, kind: 'brush', fb: JP_SERIF_FB, gf: 'Yuji+Syuku' },
+  pop:           { label: 'Mochiy Pop One',            family: '"Mochiy Pop One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Mochiy+Pop+One',
+                   vi: { label: 'Baloo 2', family: '"Baloo 2"', weight: 800, gf: 'Baloo+2:wght@800' } },
+  dot:           { label: 'DotGothic16',               family: '"DotGothic16"', weight: 400, kind: 'pixel', fb: JP_SANS_FB, gf: 'DotGothic16',
+                   vi: { label: 'VT323', family: '"VT323"', weight: 400, gf: 'VT323' } },
+  brush:         { label: 'Yuji Syuku',                family: '"Yuji Syuku"', weight: 400, kind: 'brush', fb: JP_SERIF_FB, gf: 'Yuji+Syuku',
+                   vi: { label: 'Sriracha', family: '"Sriracha"', weight: 400, gf: 'Sriracha' } },
   mono:          { label: 'IBM Plex Mono',             family: '"IBM Plex Mono"', weight: 500, kind: 'mono', fb: '"IBM Plex Sans JP",' + JP_SANS_FB, gf: 'IBM+Plex+Mono:wght@500;600' },
-  reggae:        { label: 'Reggae One',                family: '"Reggae One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Reggae+One' },
-  rampart:       { label: 'Rampart One',               family: '"Rampart One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Rampart+One' },
+  reggae:        { label: 'Reggae One',                family: '"Reggae One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Reggae+One',
+                   vi: { label: 'Paytone One', family: '"Paytone One"', weight: 400, gf: 'Paytone+One' } },
+  rampart:       { label: 'Rampart One',               family: '"Rampart One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Rampart+One',
+                   vi: { label: 'Bungee Shade', family: '"Bungee Shade"', weight: 400, gf: 'Bungee+Shade' } },
   potta:         { label: 'Potta One',                 family: '"Potta One"', weight: 400, kind: 'brush', fb: JP_SANS_FB, gf: 'Potta+One' },
-  kiwi:          { label: 'Kiwi Maru',                 family: '"Kiwi Maru"', weight: 500, kind: 'round', fb: JP_SANS_FB, gf: 'Kiwi+Maru:wght@500' },
-  klee:          { label: 'Klee One',                  family: '"Klee One"', weight: 600, kind: 'hand', fb: JP_SERIF_FB, gf: 'Klee+One:wght@600' },
-  shippori:      { label: 'Shippori Mincho B1',        family: '"Shippori Mincho B1"', weight: 800, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Shippori+Mincho+B1:wght@800' },
-  sansui:        { label: 'IBM Plex Sans JP',          family: '"IBM Plex Sans JP"', weight: 500, kind: 'gothic', fb: JP_SANS_FB, gf: 'IBM+Plex+Sans+JP:wght@400;500;700' },
+  kiwi:          { label: 'Kiwi Maru',                 family: '"Kiwi Maru"', weight: 500, kind: 'round', fb: JP_SANS_FB, gf: 'Kiwi+Maru:wght@500',
+                   vi: { label: 'Nunito', family: '"Nunito"', weight: 600, gf: 'Nunito:wght@600' } },
+  klee:          { label: 'Klee One',                  family: '"Klee One"', weight: 600, kind: 'hand', fb: JP_SERIF_FB, gf: 'Klee+One:wght@600',
+                   vi: { label: 'Patrick Hand', family: '"Patrick Hand"', weight: 400, gf: 'Patrick+Hand' } },
+  shippori:      { label: 'Shippori Mincho B1',        family: '"Shippori Mincho B1"', weight: 800, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Shippori+Mincho+B1:wght@800',
+                   vi: { label: 'Lora', family: '"Lora"', weight: 700, gf: 'Lora:wght@700' } },
+  sansui:        { label: 'IBM Plex Sans JP',          family: '"IBM Plex Sans JP"', weight: 500, kind: 'gothic', fb: JP_SANS_FB, gf: 'IBM+Plex+Sans+JP:wght@400;500;700',
+                   vi: { label: 'IBM Plex Sans', family: '"IBM Plex Sans"', weight: 500, gf: 'IBM+Plex+Sans:wght@500' } },
 };
 J.GOOGLE_FONTS_URL = 'https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Sans+JP:wght@300;500;700;900&family=Noto+Serif+JP:wght@300;500;700&family=Zen+Kaku+Gothic+New:wght@900&family=Zen+Old+Mincho:wght@900&family=Kaisei+Tokumin:wght@800&family=M+PLUS+Rounded+1c:wght@800&family=Mochiy+Pop+One&family=DotGothic16&family=Yuji+Syuku&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap';
 
@@ -50,8 +65,22 @@ J.loadFontFile = async (file) => {
   return key;
 };
 
+/* Vietnamese mode: switched on by the planner when the text contains Vietnamese-only letters */
+J.VI = false;
+J.VI_RE = /[ăĂđĐơƠưƯĩĨũŨ\u1EA0-\u1EF9]/;
+J.hasVietnamese = t => J.VI_RE.test(String(t || '').normalize('NFC'));
+J.setVietnamese = on => {
+  on = !!on;
+  if (on === J.VI) return;
+  J.VI = on;
+  J.glyphs.clear(); J.metrics.clear();
+};
+/* the face actually drawn for a catalogue key */
+J.fontFace = (key) => { const f = J.FONTS[key] || J.FONTS.gothic_bold; return J.VI && f.vi ? (f._vf || (f._vf = Object.assign({}, f, f.vi))) : f; };
+J.fontLabel = (key) => { const f = J.FONTS[key]; return !f ? key : J.VI && f.vi ? `${f.label} → ${f.vi.label}` : f.label; };
+
 J.fontCSS = (key, px) => {
-  const f = J.FONTS[key] || J.FONTS.gothic_bold;
+  const f = J.fontFace(key);
   return `${f.weight} ${px.toFixed(2)}px ${f.family},${f.fb}`;
 };
 
@@ -86,10 +115,10 @@ J.ensureFonts = async (text, keys) => {
   if (!document.fonts || !document.fonts.load) return;
   const uniq = [...new Set([...text])].join('') || 'あ';
   const list = (keys || Object.keys(J.FONTS)).filter(k => J.FONTS[k]);
-  await Promise.all([...new Set(list.map(k => J.FONTS[k].gf).filter(Boolean))].map(attachFamily));
+  await Promise.all([...new Set(list.map(k => J.fontFace(k).gf).filter(Boolean))].map(attachFamily));
   const jobs = [];
   for (const k of list) {
-    const f = J.FONTS[k];
+    const f = J.fontFace(k);
     jobs.push(document.fonts.load(`${f.weight} 64px ${f.family}`, uniq).catch(() => null));
   }
   await Promise.all(jobs);
@@ -150,7 +179,7 @@ J.glyphs = new GlyphCache();
 let _pid = 0;
 
 function decompose(fontKey, ch, res) {
-  const S = Math.ceil(res * 1.45), half = S / 2;
+  const S = Math.ceil(res * (J.VI ? 1.9 : 1.45)), half = S / 2;     // Vietnamese: room for stacked marks (Ấ Ể Ỗ)
   const cv = document.createElement('canvas'); cv.width = S; cv.height = S;
   const x = cv.getContext('2d', { willReadFrequently: true });
   x.font = J.fontCSS(fontKey, res); x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillStyle = '#fff';

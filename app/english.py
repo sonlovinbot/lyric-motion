@@ -1,6 +1,7 @@
 """English copy for the browser edition. The Japanese source stays authoritative."""
 
 BODY = {
+    'Lyric Motion は JIZURA（MIT ライセンス）をもとに開発しています。': 'Lyric Motion is built on the open-source JIZURA project (MIT License).',
     '<button id="btnAddFont">追加</button>': '<button id="btnAddFont">Add</button>',
     '曲名': 'Song title', '自動': 'Auto',
     '曲名（タイトルカード・HUDに表示）': 'Song title (shown on title cards and HUD)',
@@ -136,7 +137,7 @@ UI = {
     'プロジェクトを読み込めませんでした': 'Could not open the project',
     '解析中…': 'Analyzing audio…', '読み込めませんでした: ': 'Could not load: ',
     '約': 'about ', '（PC）': ' (installed)',
-    '字面': 'JIZURA', '追加': 'New', '和': 'JP',
+    '字面': 'Lyric', '追加': 'New', '和': 'JP',
 }
 
 EXPORT = {

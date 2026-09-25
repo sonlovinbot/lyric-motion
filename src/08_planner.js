@@ -39,7 +39,7 @@ J.parseLyrics = (raw) => {
   const lines = []; const meta = {};
   let pendingGap = false;
   for (let src of String(raw || '').replace(/\r/g, '').split('\n')) {
-    const s0 = src.trim();
+    const s0 = src.normalize('NFC').trim();
     if (!s0) { if (lines.length) pendingGap = true; continue; }
     if (s0.startsWith('#')) continue;
     const mm = s0.match(/^\[(ti|ar|al|by|offset):(.*)\]$/i);
@@ -58,7 +58,7 @@ J.parseLyrics = (raw) => {
     let manual = null;
     if (s.includes('/')) {
       manual = s.split('/').map(x => x.trim()).filter(Boolean);
-      const latin = manual.some(x => /[A-Za-z]/.test(x));
+      const latin = manual.some(x => J.RE_LATIN.test(x));
       s = manual.join(latin ? ' ' : '');
     }
     if (!s) continue;
@@ -79,7 +79,7 @@ const segType = s => {
   if ([...s].some(c => J.isKanji(c))) return 'K';
   if ([...s].every(c => J.isHira(c) || c === 'ー')) return 'H';
   if ([...s].every(c => J.isKata(c) || c === 'ー')) return 'T';
-  if (/[A-Za-z0-9]/.test(s)) return 'L';
+  if ([...s].some(J.isLatin)) return 'L';
   return 'O';
 };
 J.segments = (text) => {
@@ -163,6 +163,53 @@ J.computeTiming = (project, parsed, audio) => {
 
 /* ---------------- planning ---------------- */
 const wkey = (obj, k, d = 1) => (obj && obj[k] != null ? obj[k] : d);
+function enabledMap(project) {
+  const en = {};
+  for (const g of J.GROUP_KEYS) { en[g] = {}; const src = (project.enabled || {})[g] || {}; for (const k of J.order(g)) en[g][k] = src[k] !== false && (!J.randomOk || J.randomOk(project, g, k)); }
+  return en;
+}
+
+/* ---------------- AI direction (TypeSafe Jev, via server.py /api/direct) ----------------
+   project.ai.lines[li] = { text, layout: {key: p, none: p}, enter: {…}, exit: {…}, emph, impact }
+   Stored per lyric line and used only while that line's text is unchanged. Each cut first rolls whether to follow the
+   model (AI_STRENGTH × (1 − p(none)), lower on the later cuts of a line so the matching image lands once and the rest
+   stay varied) and then picks from its distribution; otherwise the usual weighted random pick runs, so "none" answers
+   and re-rolls keep the variety. Without project.ai nothing here touches the random stream. */
+const AI_STRENGTH = 0.85, AI_LATER = 0.4;
+const AI_SKIP = { layout: ['center', 'mixed'], enter: ['cut'], exit: ['cut'] };     // neutral defaults: nothing to match
+const aiLine = (project, li, text) => {
+  if (!project.ai || project.aiOn === false) return null;
+  const a = (project.ai.lines || [])[li];
+  return a && a.text === text ? a : null;
+};
+function aiPick(rng, cands, P, history, key) {
+  if (!P) return null;
+  if (!rng.chance(AI_STRENGTH * (P.later ? AI_LATER : 1) * (1 - (P.none || 0)))) return null;
+  const ai = cands.filter(([k]) => P[k] > 0.01).map(([k]) => [k, P[k] * novelty(history, key, k)]);
+  return ai.length ? rng.wpick(ai) : null;
+}
+/* per-line option lists for the model: what the planner could actually use for that line */
+J.aiCandidates = (project) => {
+  const en = enabledMap(project);
+  const parsed = J.parseLyrics(project.lyrics);
+  return parsed.lines.map(ln => {
+    const len = t => [...t.replace(/\s+/g, '')].length;
+    const n = len(ln.text);
+    // a line is cut into units between its longest chunk and the whole line: offer layouts that fit either end
+    const nChunk = Math.max(1, ...(ln.manual || J.chunkText(ln.text)).map(len));
+    const fits = L => L.fits(n) || L.fits(nChunk);
+    const latin = J.RE_LATIN.test(ln.text);
+    let words = latin ? ln.text.split(/\s+/).map(w => w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '')).filter(w => [...w].length > 1 || /\p{N}/u.test(w)) : J.chunkText(ln.text);
+    if (latin) words = words.concat(words.slice(0, -1).map((w, i) => w + ' ' + words[i + 1]));
+    return {
+      text: ln.text, userEmph: ln.emph.length > 0, userImpact: ln.impact,
+      layout: J.LAYOUT_ORDER.filter(k => en.layout[k] && fits(J.LAYOUTS[k]) && !AI_SKIP.layout.includes(k)),
+      enter: J.ENTER_ORDER.filter(k => en.enter[k] && J.ENTER[k] && !(J.ENTER[k].maxChars && n > J.ENTER[k].maxChars) && !AI_SKIP.enter.includes(k)),
+      exit: J.EXIT_ORDER.filter(k => en.exit[k] && J.EXIT[k] && !AI_SKIP.exit.includes(k)),
+      words: [...new Set(words)].slice(0, 30),
+    };
+  });
+};
 
 J.plan = (project, audio) => {
   const st = J.resolveStyle(project);
@@ -170,12 +217,12 @@ J.plan = (project, audio) => {
   const parsed = J.parseLyrics(project.lyrics);
   const title = project.title || parsed.meta.ti || '';
   const artist = project.artist || parsed.meta.ar || '';
+  J.setVietnamese(J.hasVietnamese(project.lyrics + ' ' + title + ' ' + artist));   // swaps in Vietnamese-capable faces
   const tm = J.computeTiming(project, parsed, audio);
   const [W, H] = J.designSize(project.aspect);
   // enabled map: anything not explicitly switched off is on (new pack entries appear enabled in old projects);
   // then the 追加分 / 和風 switches decide what random picks may use (a per-line override still works)
-  const en = {};
-  for (const g of J.GROUP_KEYS) { en[g] = {}; const src = (project.enabled || {})[g] || {}; for (const k of J.order(g)) en[g][k] = src[k] !== false && (!J.randomOk || J.randomOk(project, g, k)); }
+  const en = enabledMap(project);
   const plan = {
     version: 1, generator: 'JIZURA', title, artist, W, H, fps: project.fps || 24,
     duration: tm.duration, styleKey: project.style, style: st, fx, seed: project.seed,
@@ -207,6 +254,12 @@ J.plan = (project, audio) => {
   parsed.lines.forEach((ln, li) => {
     const s = tm.starts[li], e = tm.ends[li];
     const ov = (project.overrides || {})[li] || {};
+    const ai = aiLine(project, li, ln.text);
+    if (ai) {           // model-picked emphasis / climax only where the lyrics set none
+      ln = Object.assign({}, ln);
+      if (!ln.emph.length && ai.emph && ln.text.includes(ai.emph)) ln.emph = [ai.emph];
+      if (ai.impact && !ln.impact) ln.impact = true;
+    }
     const lineSeed = ov.lock && ov.lockedSeed != null ? ov.lockedSeed : J.h(project.seed, li + 1, ov.seed | 0);
     const rng = J.rng(lineSeed);
     const n = [...ln.text.replace(/\s+/g, '')].length;
@@ -224,7 +277,7 @@ J.plan = (project, audio) => {
     let groups;
     const nG = Math.min(nC, chunks.length);
     if (nG <= 1) groups = [ln.text];
-    else groups = partition(chunks, nG).map(g => g.join(/[A-Za-z]/.test(g.join('')) ? ' ' : ''));
+    else groups = partition(chunks, nG).map(g => g.join(J.RE_LATIN.test(g.join('')) ? ' ' : ''));
     const recap = nC > groups.length && groups.length >= 2;
     const units = groups.map(g => ({ text: g, w: [...g].length + 1.6 }));
     if (recap) units.push({ text: ln.text, w: (units.reduce((a, u) => a + u.w, 0) / units.length) * 1.25, recap: true });
@@ -244,9 +297,10 @@ J.plan = (project, audio) => {
       const txt = u.text;
       const nn = [...txt.replace(/\s+/g, '')].length;
       const emph = ln.impact && (k === 0 || u.recap) || ln.emph.some(w => txt.includes(w));
-      const layout = ov.layout && J.LAYOUTS[ov.layout] ? ov.layout : pickLayout(rng, st, en, nn, dur, history, emph, u.recap, H > W);
-      let enter = ov.enter && J.ENTER[ov.enter] ? ov.enter : pickEnter(rng, st, en, layout, dur, history, emph, nn);
-      let exit = ov.exit && J.EXIT[ov.exit] ? ov.exit : pickExit(rng, st, en, layout, dur, k === units.length - 1, history);
+      const aiP = g => ai && ai[g] && (k ? Object.assign({ later: true }, ai[g]) : ai[g]);
+      const layout = ov.layout && J.LAYOUTS[ov.layout] ? ov.layout : pickLayout(rng, st, en, nn, dur, history, emph, u.recap, H > W, aiP('layout'));
+      let enter = ov.enter && J.ENTER[ov.enter] ? ov.enter : pickEnter(rng, st, en, layout, dur, history, emph, nn, aiP('enter'));
+      let exit = ov.exit && J.EXIT[ov.exit] ? ov.exit : pickExit(rng, st, en, layout, dur, k === units.length - 1, history, aiP('exit'));
       const hold = ov.hold && J.HOLD[ov.hold] ? ov.hold : pickHold(rng, en, fx, history);
       let inDur = J.clamp(dur * 0.36, 0.12, 0.6);
       if (enter === 'type') inDur = J.clamp(nn * 0.055 + 0.1, 0.15, dur * 0.65);
@@ -345,7 +399,7 @@ function novelty(history, key, val) {
   return w;
 }
 const PORTRAIT_W = { vcols: 1.9, condensed: 1.3, huge: 1.3, center: 1.2, stack: 1.1, mixed: 0.7, marquee: 0.6, wave: 0.6, diag: 0.8, type: 0.8, gloss: 0.5 };
-function pickLayout(rng, st, en, n, dur, history, emph, recap, portrait) {
+function pickLayout(rng, st, en, n, dur, history, emph, recap, portrait, aiP) {
   const cands = [];
   for (const k of J.LAYOUT_ORDER) {
     const L = J.LAYOUTS[k];
@@ -360,14 +414,14 @@ function pickLayout(rng, st, en, n, dur, history, emph, recap, portrait) {
     cands.push([k, w]);
   }
   if (!cands.length) return 'center';
-  return rng.wpick(cands);
+  return aiPick(rng, cands, aiP, history, 'layout') || rng.wpick(cands);
 }
 const LAYOUT_ENTER = {
   type: { type: 4, scramble: 1.5 }, ring: { pop: 2, spin: 2, cut: 1, assemble: 0.4, slice: 0.2, wipe: 0.2 }, labels: { cut: 3, pop: 1 },
   wave: { pop: 1.5, drop: 1.5, blur: 1, slice: 0.3 }, tile: { assemble: 1.3, slice: 1.4, zoom: 1.4 }, huge: { zoom: 1.5, wipe: 1.5, slice: 1.4, stretch: 1.3, type: 0.2 },
   mixed: { pop: 1.6, drop: 1.6, spin: 1.3 }, scatter: { pop: 1.5, spin: 1.5, drop: 1.2, assemble: 1.3 }, vcols: { assemble: 1.8, type: 1.2 }, pill: { wipe: 1.8, type: 1.2 },
 };
-function pickEnter(rng, st, en, layout, dur, history, emph, n) {
+function pickEnter(rng, st, en, layout, dur, history, emph, n, aiP) {
   const cands = [];
   for (const k of J.ENTER_ORDER) {
     if (!en.enter[k]) continue;
@@ -383,9 +437,9 @@ function pickEnter(rng, st, en, layout, dur, history, emph, n) {
     if (emph && ['zoom', 'assemble', 'slice'].includes(k)) w *= 1.8;
     cands.push([k, w]);
   }
-  return cands.length ? rng.wpick(cands) : 'cut';
+  return cands.length ? aiPick(rng, cands, aiP, history, 'enter') || rng.wpick(cands) : 'cut';
 }
-function pickExit(rng, st, en, layout, dur, lastOfLine, history) {
+function pickExit(rng, st, en, layout, dur, lastOfLine, history, aiP) {
   const cands = [];
   for (const k of J.EXIT_ORDER) {
     if (!en.exit[k]) continue;
@@ -397,7 +451,7 @@ function pickExit(rng, st, en, layout, dur, lastOfLine, history) {
     if (['labels', 'ring', 'tile'].includes(layout) && ['explode', 'fall', 'drift'].includes(k)) w *= 0.3;
     cands.push([k, w]);
   }
-  return cands.length ? rng.wpick(cands) : 'cut';
+  return cands.length ? aiPick(rng, cands, aiP, history, 'exit') || rng.wpick(cands) : 'cut';
 }
 const HOLD_W = { still: 1, jitter: 1.2, drift: 1, breathe: 0.7, wave: 0.4, glitchtick: 0.9 };
 function pickHold(rng, en, fx, history) {

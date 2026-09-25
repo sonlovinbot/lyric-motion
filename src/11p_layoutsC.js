@@ -23,7 +23,7 @@ const tout = env => 1 - E.inCubic(env.pOut);
 const meas = (text, font, size, o) => J.measure(Object.assign({ text, font, size }, o || {}));
 const box = (x0, y0, x1, y1) => ({ x0, y0, x1, y1, cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, boxes: [] });
 const smallSize = env => J.clamp(U(env) * 0.024, 14, 34);
-const hasLatin = t => /[A-Za-z]/.test(t);
+const hasLatin = t => J.RE_LATIN.test(t);
 const flat = t => (hasLatin(t) ? String(t || '').trim().replace(/\s+/g, ' ') : strip(t));
 /* vertical-setting copy: Japanese drops spaces, latin keeps single word gaps */
 const vtext = t => (hasLatin(t) ? flat(t) : strip(t));

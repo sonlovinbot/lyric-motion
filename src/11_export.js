@@ -182,8 +182,8 @@ J.planForAE = (plan, project) => {
   clean.width = J.outputSize(project)[0]; clean.height = J.outputSize(project)[1];
   clean.extra = project.extra === true; clean.wa = project.wa !== false;
   clean.fonts = {};
-  for (const [role, keys] of Object.entries(plan.style.fonts)) clean.fonts[role] = keys.map(k => J.FONTS[k] ? J.FONTS[k].label : k);
-  clean.fontTable = Object.fromEntries(Object.entries(J.FONTS).map(([k, f]) => [k, { label: f.label, family: f.family.replace(/"/g, ''), weight: f.weight, kind: f.kind }]));
+  for (const [role, keys] of Object.entries(plan.style.fonts)) clean.fonts[role] = keys.map(k => J.FONTS[k] ? J.fontFace(k).label : k);
+  clean.fontTable = Object.fromEntries(Object.keys(J.FONTS).map(k => { const f = J.fontFace(k); return [k, { label: f.label, family: f.family.replace(/"/g, ''), weight: f.weight, kind: f.kind }]; }));
   return clean;
 };
 })();

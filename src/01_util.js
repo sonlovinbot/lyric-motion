@@ -151,7 +151,9 @@ J.isHira = c => /[ぁ-ゟ]/.test(c);
 J.isKata = c => /[゠-ヿㇰ-ㇿｦ-ﾟ]/.test(c);
 J.isSmallKana = c => 'ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮヵヶ'.includes(c);
 J.isPunct = c => /[、。，．,.!?！？…‥・「」『』（）()【】〈〉《》〔〕［］\[\]'"“”‘’ー〜～:：;；\-—―]/.test(c);
-J.isLatin = c => /[A-Za-z0-9]/.test(c);
+/* Latin letters incl. accented / Vietnamese ones (À-ɏ minus × ÷, Ḁ-ỿ) — not just A-Z, or "ở" / "ữ" read as non-Latin */
+J.RE_LATIN = /[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F\u1E00-\u1EFF]/;
+J.isLatin = c => /[0-9]/.test(c) || J.RE_LATIN.test(c);
 J.VERT_ROTATE = 'ー〜～…‥―—-()（）「」『』【】〈〉《》〔〕[]［］→←:：;；=＝';
 
 /* ---- kana → romaji (for annotation labels; kanji left out) ---- */

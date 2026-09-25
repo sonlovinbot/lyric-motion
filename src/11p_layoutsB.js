@@ -442,7 +442,7 @@ function buildCloud(env, mt, size) {
   let acc = 0;
   for (let k = 0; k < 70 && out.length < 44; k++) {
     const word = pool[k % pool.length];
-    const latin = /[A-Za-z]/.test(word);
+    const latin = J.RE_LATIN.test(word);
     const vertical = !latin && J.glyphCount(word) <= 6 && J.r(s, k, 3) < Pm.vert;
     const tier = Math.pow(0.95, out.length);
     let fs = Math.max(M * 0.018, Math.min(W * 0.4 / Math.max(1.5, J.glyphCount(word)), size * 0.6, M * 0.125 * tier * (0.65 + 0.7 * J.r(s, k, 4))));

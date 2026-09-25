@@ -19,8 +19,8 @@ const tout = env => 1 - E.inCubic(env.pOut);
 const meas = (text, font, size, o) => J.measure(Object.assign({ text, font, size }, o || {}));
 const box = (x0, y0, x1, y1) => ({ x0, y0, x1, y1, cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, boxes: [] });
 const smallSize = env => J.clamp(U(env) * 0.024, 14, 34);
-const romajiOf = env => { if (/[A-Za-z]/.test(env.cut.text)) return null; const r = J.romaji(strip(env.cut.text)); return r ? r.toUpperCase() : null; };
-const hasLatin = t => /[A-Za-z]/.test(t);
+const romajiOf = env => { if (J.RE_LATIN.test(env.cut.text)) return null; const r = J.romaji(strip(env.cut.text)); return r ? r.toUpperCase() : null; };
+const hasLatin = t => J.RE_LATIN.test(t);
 /* text as one run: latin keeps single word spaces, Japanese drops them */
 const flat = t => (hasLatin(t) ? String(t || '').trim().replace(/\s+/g, ' ') : strip(t));
 /* readable text colour on a plate, preferring the scheme's bg / fg */
@@ -314,7 +314,7 @@ reg('staircase', {
   name: '階段', tags: ['graphic', 'pop', 'editorial'], w: 1, fits: n => n >= 2 && n <= 18,
   plan: (rng, cut, st) => {
     const port = cut.H > cut.W * 1.08, n = cut.n;
-    const latin = /[A-Za-z]/.test(cut.text);
+    const latin = J.RE_LATIN.test(cut.text);
     const units = latin ? splitK(cut.text, port ? 6 : 4)
       : port ? (n <= 9 ? charUnits(cut.text) : splitK(cut.text, Math.min(6, Math.ceil(n / 2.6))))
       : (n <= 6 ? charUnits(cut.text) : splitK(cut.text, n <= 10 ? 3 : 4));
@@ -1551,7 +1551,7 @@ reg('filmstrip', {
    ====================================================================== */
 reg('quote', {
   name: '引用', tags: ['editorial', 'emotional', 'calm'], w: 1, emph: 1.2, enterBias: { blur: 1.4, type: 1.3, wipe: 1.2 }, fits: n => n <= 20,
-  plan: (rng, cut, st) => ({ font: rng.pick(fontsOf(st, ['serif', 'display'])), markFont: rng.pick(fontsOf(st, ['serif'])), marks: /[A-Za-z]/.test(cut.text) ? 'latin' : rng.pick(['kagi', 'double', 'kagi']), markC: rng.pick(['accent', 'sub']), attrib: rng.chance(0.75) }),
+  plan: (rng, cut, st) => ({ font: rng.pick(fontsOf(st, ['serif', 'display'])), markFont: rng.pick(fontsOf(st, ['serif'])), marks: J.RE_LATIN.test(cut.text) ? 'latin' : rng.pick(['kagi', 'double', 'kagi']), markC: rng.pick(['accent', 'sub']), attrib: rng.chance(0.75) }),
   render(env) {
     const { W, H, sc } = env, p = env.cut.params, u = U(env), port = isPort(env);
     const text = brk(env.cut.text.trim(), port ? 6 : 11);

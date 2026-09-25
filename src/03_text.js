@@ -9,7 +9,7 @@ J.PT = (dx = 0, dy = 0, rot = 0, s = 1, st = 1, sdir = 0, a = 1) => ({ dx, dy, r
 
 /* layout: glyph centres relative to the item origin, in unscaled item space */
 J.layoutText = (it) => {
-  const text = String(it.text ?? '');
+  const text = String(it.text ?? '').normalize('NFC');       // decomposed marks would become separate glyphs
   const size = it.size, track = it.track || 0, sx = it.sx || 1, sy = it.sy || 1;
   const lines = text.split('\n');
   const out = [];
@@ -43,7 +43,7 @@ J.layoutText = (it) => {
       const x = -(li - (lines.length - 1) / 2) * lead;
       arr.forEach((ch, ci) => {
         const a = vAdv(it.font, ch, size);
-        const r90 = J.VERT_ROTATE.includes(ch) || /[A-Za-z0-9]/.test(ch);
+        const r90 = J.VERT_ROTATE.includes(ch) || J.isLatin(ch);
         let vx = 0, vy = 0;
         if (J.isSmallKana(ch)) { vx = 0.11 * size; vy = -0.11 * size; }
         if ('、。，．'.includes(ch)) { vx = 0.3 * size; vy = -0.3 * size; }
@@ -56,7 +56,7 @@ J.layoutText = (it) => {
   out.N = gi;
   return out;
 };
-function vAdv(font, ch, size) { return /[A-Za-z0-9]/.test(ch) ? J.metrics.adv(font, ch) * size : size; }
+function vAdv(font, ch, size) { return J.isLatin(ch) ? J.metrics.adv(font, ch) * size : size; }
 
 /* Blurred / glowing items are drawn ONCE into an offscreen layer and the blur / glow is applied to the whole
    layer — a filter or shadowBlur on every glyph (× 3 chromatic passes) is very slow on canvas. */
@@ -77,7 +77,7 @@ function drawItemLayered(env, it) {
   }
   if (x0 > x1) return null;
   const sh = it.shadow, ex = it.extrude;
-  const pad = (it.blur || 0) * 2.6 + size * 0.12 + (it.stroke || 0) + (sh ? (sh.blur || 0) * 1.3 + Math.abs(sh.dx || 0) + Math.abs(sh.dy || 0) : 0) + (ex ? Math.abs(ex.dx || 0) + Math.abs(ex.dy || 0) : 0);
+  const pad = (it.blur || 0) * 2.6 + size * (J.VI ? 0.3 : 0.12) + (it.stroke || 0) + (sh ? (sh.blur || 0) * 1.3 + Math.abs(sh.dx || 0) + Math.abs(sh.dy || 0) : 0) + (ex ? Math.abs(ex.dx || 0) + Math.abs(ex.dy || 0) : 0);
   x0 -= pad; y0 -= pad; x1 += pad; y1 += pad;
   const T = ctx.getTransform(), k = Math.max(0.05, Math.hypot(T.a, T.b));
   const ow = Math.ceil((x1 - x0) * k), oh = Math.ceil((y1 - y0) * k);

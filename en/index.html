@@ -3,15 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>JIZURA — Lyric Motion Video Maker</title>
+<title>Lyric Motion — Kinetic Lyric Video Maker</title>
 <meta name="description" content="Turn lyrics into animated lyric videos in your browser and export MP4.">
-<link rel="canonical" href="https://852wa.github.io/JIZURA/en/">
-<link rel="alternate" hreflang="ja" href="https://852wa.github.io/JIZURA/">
-<link rel="alternate" hreflang="en" href="https://852wa.github.io/JIZURA/en/">
+<link rel="canonical" href="https://sonlovinbot.github.io/lyric-motion/en/">
+<link rel="alternate" hreflang="ja" href="https://sonlovinbot.github.io/lyric-motion/">
+<link rel="alternate" hreflang="en" href="https://sonlovinbot.github.io/lyric-motion/en/">
+<link rel="alternate" hreflang="vi" href="https://sonlovinbot.github.io/lyric-motion/vi/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="JIZURA — Lyric Motion Video Maker">
+<meta property="og:title" content="Lyric Motion — Kinetic Lyric Video Maker">
 <meta property="og:description" content="Turn lyrics into animated lyric videos in your browser and export MP4.">
-<meta property="og:url" content="https://852wa.github.io/JIZURA/en/">
+<meta property="og:url" content="https://sonlovinbot.github.io/lyric-motion/en/">
 <meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,8 +50,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* ---------- top bar ---------- */
 .bar { display: flex; align-items: center; gap: 16px; padding-block: 10px; padding-inline: 16px; border-bottom: 1px solid var(--line); background: var(--panel); flex-wrap: wrap; }
 .brand { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
-.brand .mark { font: 900 26px/1 var(--brand); letter-spacing: 0.02em; color: var(--text); text-shadow: -2px -1px 0 rgba(22,244,212,0.85), 2px 1px 0 rgba(245,165,12,0.9); }
-.brand .word { font: 600 12px/1 var(--mono); letter-spacing: 0.34em; color: var(--text); }
+.brand .mark { font: 700 21px/1 var(--brand); letter-spacing: 0.01em; white-space: nowrap; color: var(--text); text-shadow: -2px -1px 0 rgba(22,244,212,0.85), 2px 1px 0 rgba(245,165,12,0.9); }
 .brand .tag { font: 400 11px/1 var(--mono); color: var(--muted); letter-spacing: 0.08em; }
 .proj { display: flex; gap: 8px; flex: 1 1 280px; min-width: 0; }
 .proj input { flex: 1 1 0; min-width: 0; }
@@ -304,7 +304,7 @@ dialog.terms a { color: var(--cyan); word-break: break-all; }
 <body>
 <div id="app">
   <header class="bar">
-    <div class="brand"><span class="mark" aria-hidden="true">字面</span><span class="word">JIZURA</span><span class="tag">lyric motion engine</span></div>
+    <div class="brand"><span class="mark">Lyric Motion</span><span class="tag">kinetic text studio</span></div>
     <div class="proj">
       <input id="songTitle" type="text" placeholder="Song title (shown on title cards and HUD)" aria-label="Song title">
       <input id="songArtist" type="text" placeholder="Artist" aria-label="Artist">
@@ -313,7 +313,7 @@ dialog.terms a { color: var(--cyan); word-break: break-all; }
       <button id="modeEasy" aria-pressed="false" title="A simple workspace focused on automatic creation">Simple</button>
       <button id="modePro" aria-pressed="true" title="Show all settings">Advanced</button>
     </div>
-    <nav class="lang-switch" aria-label="Language"><a href="../index.html" lang="ja">日本語</a><span aria-current="page">English</span></nav>
+    <nav class="lang-switch" aria-label="Language"><a href="../index.html" lang="ja">日本語</a><span aria-current="page">English</span><a href="../vi/index.html" lang="vi">Tiếng Việt</a></nav>
     <div class="acts">
       <label class="file" title="Open a saved project (.json)">Open<input id="fileProject" type="file" accept=".json,application/json"></label>
       <button id="btnSave" title="Save project as .json">Save</button>
@@ -521,6 +521,7 @@ dialog.terms a { color: var(--cyan); word-break: break-all; }
     </div>
     <p>The tool is released under the <strong>MIT license</strong>. See the license at:</p>
     <p><a href="https://github.com/852wa/JIZURA" target="_blank" rel="noopener">https://github.com/852wa/JIZURA</a></p>
+    <p class="muted terms-note">Lyric Motion is built on the open-source JIZURA project (MIT License).</p>
     <p class="muted terms-note">Your lyrics and audio are processed in this browser and are not sent to a server.</p>
     <details class="terms-oss"><summary>Open source software</summary>
       <p>MP4 export: mp4-muxer（MIT License）<br>Fonts: Google Fonts typefaces（SIL Open Font License 1.1）</p>
@@ -691,7 +692,9 @@ J.isHira = c => /[ぁ-ゟ]/.test(c);
 J.isKata = c => /[゠-ヿㇰ-ㇿｦ-ﾟ]/.test(c);
 J.isSmallKana = c => 'ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮヵヶ'.includes(c);
 J.isPunct = c => /[、。，．,.!?！？…‥・「」『』（）()【】〈〉《》〔〕［］\[\]'"“”‘’ー〜～:：;；\-—―]/.test(c);
-J.isLatin = c => /[A-Za-z0-9]/.test(c);
+/* Latin letters incl. accented / Vietnamese ones (À-ɏ minus × ÷, Ḁ-ỿ) — not just A-Z, or "ở" / "ữ" read as non-Latin */
+J.RE_LATIN = /[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u024F\u1E00-\u1EFF]/;
+J.isLatin = c => /[0-9]/.test(c) || J.RE_LATIN.test(c);
 J.VERT_ROTATE = 'ー〜～…‥―—-()（）「」『』【】〈〉《》〔〕[]［］→←:：;；=＝';
 
 /* ---- kana → romaji (for annotation labels; kanji left out) ---- */
@@ -729,31 +732,46 @@ J.fmtTime = (t, fps) => {
 const JP_SANS_FB = '"Noto Sans JP","Noto Sans CJK JP","Hiragino Sans","Yu Gothic","Meiryo",sans-serif';
 const JP_SERIF_FB = '"Noto Serif JP","Noto Serif CJK JP","Hiragino Mincho ProN","Yu Mincho",serif';
 
-/* role catalogue: key -> {label, family, weight, kind} */
+/* role catalogue: key -> {label, family, weight, kind}
+   vi: a face of similar character used instead when the lyrics are Vietnamese — set only on families whose Google Fonts
+   build has no Vietnamese subset (checked against fonts.googleapis.com: those glyphs would otherwise fall back to
+   another font letter by letter, e.g. "Nh" in one face and "ữ" in another). */
 J.FONTS = {
   gothic_black:  { label: 'Noto Sans JP Black',        family: '"Noto Sans JP"', weight: 900, kind: 'gothic', fb: JP_SANS_FB, gf: 'Noto+Sans+JP:wght@300;500;700;900' },
   gothic_bold:   { label: 'Noto Sans JP Bold',         family: '"Noto Sans JP"', weight: 700, kind: 'gothic', fb: JP_SANS_FB, gf: 'Noto+Sans+JP:wght@300;500;700;900' },
   gothic_med:    { label: 'Noto Sans JP Medium',       family: '"Noto Sans JP"', weight: 500, kind: 'gothic', fb: JP_SANS_FB, gf: 'Noto+Sans+JP:wght@300;500;700;900' },
   gothic_light:  { label: 'Noto Sans JP Light',        family: '"Noto Sans JP"', weight: 300, kind: 'gothic', fb: JP_SANS_FB, gf: 'Noto+Sans+JP:wght@300;500;700;900' },
   dela:          { label: 'Dela Gothic One',           family: '"Dela Gothic One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Dela+Gothic+One' },
-  zenkaku:       { label: 'Zen Kaku Gothic New Black', family: '"Zen Kaku Gothic New"', weight: 900, kind: 'gothic', fb: JP_SANS_FB, gf: 'Zen+Kaku+Gothic+New:wght@900' },
-  mincho_black:  { label: 'Zen Old Mincho Black',      family: '"Zen Old Mincho"', weight: 900, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Zen+Old+Mincho:wght@900' },
+  zenkaku:       { label: 'Zen Kaku Gothic New Black', family: '"Zen Kaku Gothic New"', weight: 900, kind: 'gothic', fb: JP_SANS_FB, gf: 'Zen+Kaku+Gothic+New:wght@900',
+                   vi: { label: 'Be Vietnam Pro', family: '"Be Vietnam Pro"', weight: 900, gf: 'Be+Vietnam+Pro:wght@900' } },
+  mincho_black:  { label: 'Zen Old Mincho Black',      family: '"Zen Old Mincho"', weight: 900, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Zen+Old+Mincho:wght@900',
+                   vi: { label: 'Playfair Display', family: '"Playfair Display"', weight: 900, gf: 'Playfair+Display:wght@900' } },
   mincho_bold:   { label: 'Noto Serif JP Bold',        family: '"Noto Serif JP"', weight: 700, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Noto+Serif+JP:wght@300;500;700' },
   mincho:        { label: 'Noto Serif JP Medium',      family: '"Noto Serif JP"', weight: 500, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Noto+Serif+JP:wght@300;500;700' },
   mincho_light:  { label: 'Noto Serif JP Light',       family: '"Noto Serif JP"', weight: 300, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Noto+Serif+JP:wght@300;500;700' },
-  tokumin:       { label: 'Kaisei Tokumin',            family: '"Kaisei Tokumin"', weight: 800, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Kaisei+Tokumin:wght@800' },
+  tokumin:       { label: 'Kaisei Tokumin',            family: '"Kaisei Tokumin"', weight: 800, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Kaisei+Tokumin:wght@800',
+                   vi: { label: 'Noto Serif Display', family: '"Noto Serif Display"', weight: 800, gf: 'Noto+Serif+Display:wght@800' } },
   round:         { label: 'M PLUS Rounded 1c',         family: '"M PLUS Rounded 1c"', weight: 800, kind: 'round', fb: JP_SANS_FB, gf: 'M+PLUS+Rounded+1c:wght@800' },
-  pop:           { label: 'Mochiy Pop One',            family: '"Mochiy Pop One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Mochiy+Pop+One' },
-  dot:           { label: 'DotGothic16',               family: '"DotGothic16"', weight: 400, kind: 'pixel', fb: JP_SANS_FB, gf: 'DotGothic16' },
-  brush:         { label: 'Yuji Syuku',                family: '"Yuji Syuku"', weight: 400, kind: 'brush', fb: JP_SERIF_FB, gf: 'Yuji+Syuku' },
+  pop:           { label: 'Mochiy Pop One',            family: '"Mochiy Pop One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Mochiy+Pop+One',
+                   vi: { label: 'Baloo 2', family: '"Baloo 2"', weight: 800, gf: 'Baloo+2:wght@800' } },
+  dot:           { label: 'DotGothic16',               family: '"DotGothic16"', weight: 400, kind: 'pixel', fb: JP_SANS_FB, gf: 'DotGothic16',
+                   vi: { label: 'VT323', family: '"VT323"', weight: 400, gf: 'VT323' } },
+  brush:         { label: 'Yuji Syuku',                family: '"Yuji Syuku"', weight: 400, kind: 'brush', fb: JP_SERIF_FB, gf: 'Yuji+Syuku',
+                   vi: { label: 'Sriracha', family: '"Sriracha"', weight: 400, gf: 'Sriracha' } },
   mono:          { label: 'IBM Plex Mono',             family: '"IBM Plex Mono"', weight: 500, kind: 'mono', fb: '"IBM Plex Sans JP",' + JP_SANS_FB, gf: 'IBM+Plex+Mono:wght@500;600' },
-  reggae:        { label: 'Reggae One',                family: '"Reggae One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Reggae+One' },
-  rampart:       { label: 'Rampart One',               family: '"Rampart One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Rampart+One' },
+  reggae:        { label: 'Reggae One',                family: '"Reggae One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Reggae+One',
+                   vi: { label: 'Paytone One', family: '"Paytone One"', weight: 400, gf: 'Paytone+One' } },
+  rampart:       { label: 'Rampart One',               family: '"Rampart One"', weight: 400, kind: 'display', fb: JP_SANS_FB, gf: 'Rampart+One',
+                   vi: { label: 'Bungee Shade', family: '"Bungee Shade"', weight: 400, gf: 'Bungee+Shade' } },
   potta:         { label: 'Potta One',                 family: '"Potta One"', weight: 400, kind: 'brush', fb: JP_SANS_FB, gf: 'Potta+One' },
-  kiwi:          { label: 'Kiwi Maru',                 family: '"Kiwi Maru"', weight: 500, kind: 'round', fb: JP_SANS_FB, gf: 'Kiwi+Maru:wght@500' },
-  klee:          { label: 'Klee One',                  family: '"Klee One"', weight: 600, kind: 'hand', fb: JP_SERIF_FB, gf: 'Klee+One:wght@600' },
-  shippori:      { label: 'Shippori Mincho B1',        family: '"Shippori Mincho B1"', weight: 800, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Shippori+Mincho+B1:wght@800' },
-  sansui:        { label: 'IBM Plex Sans JP',          family: '"IBM Plex Sans JP"', weight: 500, kind: 'gothic', fb: JP_SANS_FB, gf: 'IBM+Plex+Sans+JP:wght@400;500;700' },
+  kiwi:          { label: 'Kiwi Maru',                 family: '"Kiwi Maru"', weight: 500, kind: 'round', fb: JP_SANS_FB, gf: 'Kiwi+Maru:wght@500',
+                   vi: { label: 'Nunito', family: '"Nunito"', weight: 600, gf: 'Nunito:wght@600' } },
+  klee:          { label: 'Klee One',                  family: '"Klee One"', weight: 600, kind: 'hand', fb: JP_SERIF_FB, gf: 'Klee+One:wght@600',
+                   vi: { label: 'Patrick Hand', family: '"Patrick Hand"', weight: 400, gf: 'Patrick+Hand' } },
+  shippori:      { label: 'Shippori Mincho B1',        family: '"Shippori Mincho B1"', weight: 800, kind: 'mincho', fb: JP_SERIF_FB, gf: 'Shippori+Mincho+B1:wght@800',
+                   vi: { label: 'Lora', family: '"Lora"', weight: 700, gf: 'Lora:wght@700' } },
+  sansui:        { label: 'IBM Plex Sans JP',          family: '"IBM Plex Sans JP"', weight: 500, kind: 'gothic', fb: JP_SANS_FB, gf: 'IBM+Plex+Sans+JP:wght@400;500;700',
+                   vi: { label: 'IBM Plex Sans', family: '"IBM Plex Sans"', weight: 500, gf: 'IBM+Plex+Sans:wght@500' } },
 };
 J.GOOGLE_FONTS_URL = 'https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Sans+JP:wght@300;500;700;900&family=Noto+Serif+JP:wght@300;500;700&family=Zen+Kaku+Gothic+New:wght@900&family=Zen+Old+Mincho:wght@900&family=Kaisei+Tokumin:wght@800&family=M+PLUS+Rounded+1c:wght@800&family=Mochiy+Pop+One&family=DotGothic16&family=Yuji+Syuku&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap';
 
@@ -772,8 +790,22 @@ J.loadFontFile = async (file) => {
   return key;
 };
 
+/* Vietnamese mode: switched on by the planner when the text contains Vietnamese-only letters */
+J.VI = false;
+J.VI_RE = /[ăĂđĐơƠưƯĩĨũŨ\u1EA0-\u1EF9]/;
+J.hasVietnamese = t => J.VI_RE.test(String(t || '').normalize('NFC'));
+J.setVietnamese = on => {
+  on = !!on;
+  if (on === J.VI) return;
+  J.VI = on;
+  J.glyphs.clear(); J.metrics.clear();
+};
+/* the face actually drawn for a catalogue key */
+J.fontFace = (key) => { const f = J.FONTS[key] || J.FONTS.gothic_bold; return J.VI && f.vi ? (f._vf || (f._vf = Object.assign({}, f, f.vi))) : f; };
+J.fontLabel = (key) => { const f = J.FONTS[key]; return !f ? key : J.VI && f.vi ? `${f.label} → ${f.vi.label}` : f.label; };
+
 J.fontCSS = (key, px) => {
-  const f = J.FONTS[key] || J.FONTS.gothic_bold;
+  const f = J.fontFace(key);
   return `${f.weight} ${px.toFixed(2)}px ${f.family},${f.fb}`;
 };
 
@@ -808,10 +840,10 @@ J.ensureFonts = async (text, keys) => {
   if (!document.fonts || !document.fonts.load) return;
   const uniq = [...new Set([...text])].join('') || 'あ';
   const list = (keys || Object.keys(J.FONTS)).filter(k => J.FONTS[k]);
-  await Promise.all([...new Set(list.map(k => J.FONTS[k].gf).filter(Boolean))].map(attachFamily));
+  await Promise.all([...new Set(list.map(k => J.fontFace(k).gf).filter(Boolean))].map(attachFamily));
   const jobs = [];
   for (const k of list) {
-    const f = J.FONTS[k];
+    const f = J.fontFace(k);
     jobs.push(document.fonts.load(`${f.weight} 64px ${f.family}`, uniq).catch(() => null));
   }
   await Promise.all(jobs);
@@ -872,7 +904,7 @@ J.glyphs = new GlyphCache();
 let _pid = 0;
 
 function decompose(fontKey, ch, res) {
-  const S = Math.ceil(res * 1.45), half = S / 2;
+  const S = Math.ceil(res * (J.VI ? 1.9 : 1.45)), half = S / 2;     // Vietnamese: room for stacked marks (Ấ Ể Ỗ)
   const cv = document.createElement('canvas'); cv.width = S; cv.height = S;
   const x = cv.getContext('2d', { willReadFrequently: true });
   x.font = J.fontCSS(fontKey, res); x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillStyle = '#fff';
@@ -998,7 +1030,7 @@ J.PT = (dx = 0, dy = 0, rot = 0, s = 1, st = 1, sdir = 0, a = 1) => ({ dx, dy, r
 
 /* layout: glyph centres relative to the item origin, in unscaled item space */
 J.layoutText = (it) => {
-  const text = String(it.text ?? '');
+  const text = String(it.text ?? '').normalize('NFC');       // decomposed marks would become separate glyphs
   const size = it.size, track = it.track || 0, sx = it.sx || 1, sy = it.sy || 1;
   const lines = text.split('\n');
   const out = [];
@@ -1032,7 +1064,7 @@ J.layoutText = (it) => {
       const x = -(li - (lines.length - 1) / 2) * lead;
       arr.forEach((ch, ci) => {
         const a = vAdv(it.font, ch, size);
-        const r90 = J.VERT_ROTATE.includes(ch) || /[A-Za-z0-9]/.test(ch);
+        const r90 = J.VERT_ROTATE.includes(ch) || J.isLatin(ch);
         let vx = 0, vy = 0;
         if (J.isSmallKana(ch)) { vx = 0.11 * size; vy = -0.11 * size; }
         if ('、。，．'.includes(ch)) { vx = 0.3 * size; vy = -0.3 * size; }
@@ -1045,7 +1077,7 @@ J.layoutText = (it) => {
   out.N = gi;
   return out;
 };
-function vAdv(font, ch, size) { return /[A-Za-z0-9]/.test(ch) ? J.metrics.adv(font, ch) * size : size; }
+function vAdv(font, ch, size) { return J.isLatin(ch) ? J.metrics.adv(font, ch) * size : size; }
 
 /* Blurred / glowing items are drawn ONCE into an offscreen layer and the blur / glow is applied to the whole
    layer — a filter or shadowBlur on every glyph (× 3 chromatic passes) is very slow on canvas. */
@@ -1066,7 +1098,7 @@ function drawItemLayered(env, it) {
   }
   if (x0 > x1) return null;
   const sh = it.shadow, ex = it.extrude;
-  const pad = (it.blur || 0) * 2.6 + size * 0.12 + (it.stroke || 0) + (sh ? (sh.blur || 0) * 1.3 + Math.abs(sh.dx || 0) + Math.abs(sh.dy || 0) : 0) + (ex ? Math.abs(ex.dx || 0) + Math.abs(ex.dy || 0) : 0);
+  const pad = (it.blur || 0) * 2.6 + size * (J.VI ? 0.3 : 0.12) + (it.stroke || 0) + (sh ? (sh.blur || 0) * 1.3 + Math.abs(sh.dx || 0) + Math.abs(sh.dy || 0) : 0) + (ex ? Math.abs(ex.dx || 0) + Math.abs(ex.dy || 0) : 0);
   x0 -= pad; y0 -= pad; x1 += pad; y1 += pad;
   const T = ctx.getTransform(), k = Math.max(0.05, Math.hypot(T.a, T.b));
   const ow = Math.ceil((x1 - x0) * k), oh = Math.ceil((y1 - y0) * k);
@@ -2932,7 +2964,7 @@ J.parseLyrics = (raw) => {
   const lines = []; const meta = {};
   let pendingGap = false;
   for (let src of String(raw || '').replace(/\r/g, '').split('\n')) {
-    const s0 = src.trim();
+    const s0 = src.normalize('NFC').trim();
     if (!s0) { if (lines.length) pendingGap = true; continue; }
     if (s0.startsWith('#')) continue;
     const mm = s0.match(/^\[(ti|ar|al|by|offset):(.*)\]$/i);
@@ -2951,7 +2983,7 @@ J.parseLyrics = (raw) => {
     let manual = null;
     if (s.includes('/')) {
       manual = s.split('/').map(x => x.trim()).filter(Boolean);
-      const latin = manual.some(x => /[A-Za-z]/.test(x));
+      const latin = manual.some(x => J.RE_LATIN.test(x));
       s = manual.join(latin ? ' ' : '');
     }
     if (!s) continue;
@@ -2972,7 +3004,7 @@ const segType = s => {
   if ([...s].some(c => J.isKanji(c))) return 'K';
   if ([...s].every(c => J.isHira(c) || c === 'ー')) return 'H';
   if ([...s].every(c => J.isKata(c) || c === 'ー')) return 'T';
-  if (/[A-Za-z0-9]/.test(s)) return 'L';
+  if ([...s].some(J.isLatin)) return 'L';
   return 'O';
 };
 J.segments = (text) => {
@@ -3056,6 +3088,53 @@ J.computeTiming = (project, parsed, audio) => {
 
 /* ---------------- planning ---------------- */
 const wkey = (obj, k, d = 1) => (obj && obj[k] != null ? obj[k] : d);
+function enabledMap(project) {
+  const en = {};
+  for (const g of J.GROUP_KEYS) { en[g] = {}; const src = (project.enabled || {})[g] || {}; for (const k of J.order(g)) en[g][k] = src[k] !== false && (!J.randomOk || J.randomOk(project, g, k)); }
+  return en;
+}
+
+/* ---------------- AI direction (TypeSafe Jev, via server.py /api/direct) ----------------
+   project.ai.lines[li] = { text, layout: {key: p, none: p}, enter: {…}, exit: {…}, emph, impact }
+   Stored per lyric line and used only while that line's text is unchanged. Each cut first rolls whether to follow the
+   model (AI_STRENGTH × (1 − p(none)), lower on the later cuts of a line so the matching image lands once and the rest
+   stay varied) and then picks from its distribution; otherwise the usual weighted random pick runs, so "none" answers
+   and re-rolls keep the variety. Without project.ai nothing here touches the random stream. */
+const AI_STRENGTH = 0.85, AI_LATER = 0.4;
+const AI_SKIP = { layout: ['center', 'mixed'], enter: ['cut'], exit: ['cut'] };     // neutral defaults: nothing to match
+const aiLine = (project, li, text) => {
+  if (!project.ai || project.aiOn === false) return null;
+  const a = (project.ai.lines || [])[li];
+  return a && a.text === text ? a : null;
+};
+function aiPick(rng, cands, P, history, key) {
+  if (!P) return null;
+  if (!rng.chance(AI_STRENGTH * (P.later ? AI_LATER : 1) * (1 - (P.none || 0)))) return null;
+  const ai = cands.filter(([k]) => P[k] > 0.01).map(([k]) => [k, P[k] * novelty(history, key, k)]);
+  return ai.length ? rng.wpick(ai) : null;
+}
+/* per-line option lists for the model: what the planner could actually use for that line */
+J.aiCandidates = (project) => {
+  const en = enabledMap(project);
+  const parsed = J.parseLyrics(project.lyrics);
+  return parsed.lines.map(ln => {
+    const len = t => [...t.replace(/\s+/g, '')].length;
+    const n = len(ln.text);
+    // a line is cut into units between its longest chunk and the whole line: offer layouts that fit either end
+    const nChunk = Math.max(1, ...(ln.manual || J.chunkText(ln.text)).map(len));
+    const fits = L => L.fits(n) || L.fits(nChunk);
+    const latin = J.RE_LATIN.test(ln.text);
+    let words = latin ? ln.text.split(/\s+/).map(w => w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '')).filter(w => [...w].length > 1 || /\p{N}/u.test(w)) : J.chunkText(ln.text);
+    if (latin) words = words.concat(words.slice(0, -1).map((w, i) => w + ' ' + words[i + 1]));
+    return {
+      text: ln.text, userEmph: ln.emph.length > 0, userImpact: ln.impact,
+      layout: J.LAYOUT_ORDER.filter(k => en.layout[k] && fits(J.LAYOUTS[k]) && !AI_SKIP.layout.includes(k)),
+      enter: J.ENTER_ORDER.filter(k => en.enter[k] && J.ENTER[k] && !(J.ENTER[k].maxChars && n > J.ENTER[k].maxChars) && !AI_SKIP.enter.includes(k)),
+      exit: J.EXIT_ORDER.filter(k => en.exit[k] && J.EXIT[k] && !AI_SKIP.exit.includes(k)),
+      words: [...new Set(words)].slice(0, 30),
+    };
+  });
+};
 
 J.plan = (project, audio) => {
   const st = J.resolveStyle(project);
@@ -3063,12 +3142,12 @@ J.plan = (project, audio) => {
   const parsed = J.parseLyrics(project.lyrics);
   const title = project.title || parsed.meta.ti || '';
   const artist = project.artist || parsed.meta.ar || '';
+  J.setVietnamese(J.hasVietnamese(project.lyrics + ' ' + title + ' ' + artist));   // swaps in Vietnamese-capable faces
   const tm = J.computeTiming(project, parsed, audio);
   const [W, H] = J.designSize(project.aspect);
   // enabled map: anything not explicitly switched off is on (new pack entries appear enabled in old projects);
   // then the 追加分 / 和風 switches decide what random picks may use (a per-line override still works)
-  const en = {};
-  for (const g of J.GROUP_KEYS) { en[g] = {}; const src = (project.enabled || {})[g] || {}; for (const k of J.order(g)) en[g][k] = src[k] !== false && (!J.randomOk || J.randomOk(project, g, k)); }
+  const en = enabledMap(project);
   const plan = {
     version: 1, generator: 'JIZURA', title, artist, W, H, fps: project.fps || 24,
     duration: tm.duration, styleKey: project.style, style: st, fx, seed: project.seed,
@@ -3100,6 +3179,12 @@ J.plan = (project, audio) => {
   parsed.lines.forEach((ln, li) => {
     const s = tm.starts[li], e = tm.ends[li];
     const ov = (project.overrides || {})[li] || {};
+    const ai = aiLine(project, li, ln.text);
+    if (ai) {           // model-picked emphasis / climax only where the lyrics set none
+      ln = Object.assign({}, ln);
+      if (!ln.emph.length && ai.emph && ln.text.includes(ai.emph)) ln.emph = [ai.emph];
+      if (ai.impact && !ln.impact) ln.impact = true;
+    }
     const lineSeed = ov.lock && ov.lockedSeed != null ? ov.lockedSeed : J.h(project.seed, li + 1, ov.seed | 0);
     const rng = J.rng(lineSeed);
     const n = [...ln.text.replace(/\s+/g, '')].length;
@@ -3117,7 +3202,7 @@ J.plan = (project, audio) => {
     let groups;
     const nG = Math.min(nC, chunks.length);
     if (nG <= 1) groups = [ln.text];
-    else groups = partition(chunks, nG).map(g => g.join(/[A-Za-z]/.test(g.join('')) ? ' ' : ''));
+    else groups = partition(chunks, nG).map(g => g.join(J.RE_LATIN.test(g.join('')) ? ' ' : ''));
     const recap = nC > groups.length && groups.length >= 2;
     const units = groups.map(g => ({ text: g, w: [...g].length + 1.6 }));
     if (recap) units.push({ text: ln.text, w: (units.reduce((a, u) => a + u.w, 0) / units.length) * 1.25, recap: true });
@@ -3137,9 +3222,10 @@ J.plan = (project, audio) => {
       const txt = u.text;
       const nn = [...txt.replace(/\s+/g, '')].length;
       const emph = ln.impact && (k === 0 || u.recap) || ln.emph.some(w => txt.includes(w));
-      const layout = ov.layout && J.LAYOUTS[ov.layout] ? ov.layout : pickLayout(rng, st, en, nn, dur, history, emph, u.recap, H > W);
-      let enter = ov.enter && J.ENTER[ov.enter] ? ov.enter : pickEnter(rng, st, en, layout, dur, history, emph, nn);
-      let exit = ov.exit && J.EXIT[ov.exit] ? ov.exit : pickExit(rng, st, en, layout, dur, k === units.length - 1, history);
+      const aiP = g => ai && ai[g] && (k ? Object.assign({ later: true }, ai[g]) : ai[g]);
+      const layout = ov.layout && J.LAYOUTS[ov.layout] ? ov.layout : pickLayout(rng, st, en, nn, dur, history, emph, u.recap, H > W, aiP('layout'));
+      let enter = ov.enter && J.ENTER[ov.enter] ? ov.enter : pickEnter(rng, st, en, layout, dur, history, emph, nn, aiP('enter'));
+      let exit = ov.exit && J.EXIT[ov.exit] ? ov.exit : pickExit(rng, st, en, layout, dur, k === units.length - 1, history, aiP('exit'));
       const hold = ov.hold && J.HOLD[ov.hold] ? ov.hold : pickHold(rng, en, fx, history);
       let inDur = J.clamp(dur * 0.36, 0.12, 0.6);
       if (enter === 'type') inDur = J.clamp(nn * 0.055 + 0.1, 0.15, dur * 0.65);
@@ -3238,7 +3324,7 @@ function novelty(history, key, val) {
   return w;
 }
 const PORTRAIT_W = { vcols: 1.9, condensed: 1.3, huge: 1.3, center: 1.2, stack: 1.1, mixed: 0.7, marquee: 0.6, wave: 0.6, diag: 0.8, type: 0.8, gloss: 0.5 };
-function pickLayout(rng, st, en, n, dur, history, emph, recap, portrait) {
+function pickLayout(rng, st, en, n, dur, history, emph, recap, portrait, aiP) {
   const cands = [];
   for (const k of J.LAYOUT_ORDER) {
     const L = J.LAYOUTS[k];
@@ -3253,14 +3339,14 @@ function pickLayout(rng, st, en, n, dur, history, emph, recap, portrait) {
     cands.push([k, w]);
   }
   if (!cands.length) return 'center';
-  return rng.wpick(cands);
+  return aiPick(rng, cands, aiP, history, 'layout') || rng.wpick(cands);
 }
 const LAYOUT_ENTER = {
   type: { type: 4, scramble: 1.5 }, ring: { pop: 2, spin: 2, cut: 1, assemble: 0.4, slice: 0.2, wipe: 0.2 }, labels: { cut: 3, pop: 1 },
   wave: { pop: 1.5, drop: 1.5, blur: 1, slice: 0.3 }, tile: { assemble: 1.3, slice: 1.4, zoom: 1.4 }, huge: { zoom: 1.5, wipe: 1.5, slice: 1.4, stretch: 1.3, type: 0.2 },
   mixed: { pop: 1.6, drop: 1.6, spin: 1.3 }, scatter: { pop: 1.5, spin: 1.5, drop: 1.2, assemble: 1.3 }, vcols: { assemble: 1.8, type: 1.2 }, pill: { wipe: 1.8, type: 1.2 },
 };
-function pickEnter(rng, st, en, layout, dur, history, emph, n) {
+function pickEnter(rng, st, en, layout, dur, history, emph, n, aiP) {
   const cands = [];
   for (const k of J.ENTER_ORDER) {
     if (!en.enter[k]) continue;
@@ -3276,9 +3362,9 @@ function pickEnter(rng, st, en, layout, dur, history, emph, n) {
     if (emph && ['zoom', 'assemble', 'slice'].includes(k)) w *= 1.8;
     cands.push([k, w]);
   }
-  return cands.length ? rng.wpick(cands) : 'cut';
+  return cands.length ? aiPick(rng, cands, aiP, history, 'enter') || rng.wpick(cands) : 'cut';
 }
-function pickExit(rng, st, en, layout, dur, lastOfLine, history) {
+function pickExit(rng, st, en, layout, dur, lastOfLine, history, aiP) {
   const cands = [];
   for (const k of J.EXIT_ORDER) {
     if (!en.exit[k]) continue;
@@ -3290,7 +3376,7 @@ function pickExit(rng, st, en, layout, dur, lastOfLine, history) {
     if (['labels', 'ring', 'tile'].includes(layout) && ['explode', 'fall', 'drift'].includes(k)) w *= 0.3;
     cands.push([k, w]);
   }
-  return cands.length ? rng.wpick(cands) : 'cut';
+  return cands.length ? aiPick(rng, cands, aiP, history, 'exit') || rng.wpick(cands) : 'cut';
 }
 const HOLD_W = { still: 1, jitter: 1.2, drift: 1, breathe: 0.7, wave: 0.4, glitchtick: 0.9 };
 function pickHold(rng, en, fx, history) {
@@ -4156,8 +4242,8 @@ J.planForAE = (plan, project) => {
   clean.width = J.outputSize(project)[0]; clean.height = J.outputSize(project)[1];
   clean.extra = project.extra === true; clean.wa = project.wa !== false;
   clean.fonts = {};
-  for (const [role, keys] of Object.entries(plan.style.fonts)) clean.fonts[role] = keys.map(k => J.FONTS[k] ? J.FONTS[k].label : k);
-  clean.fontTable = Object.fromEntries(Object.entries(J.FONTS).map(([k, f]) => [k, { label: f.label, family: f.family.replace(/"/g, ''), weight: f.weight, kind: f.kind }]));
+  for (const [role, keys] of Object.entries(plan.style.fonts)) clean.fonts[role] = keys.map(k => J.FONTS[k] ? J.fontFace(k).label : k);
+  clean.fontTable = Object.fromEntries(Object.keys(J.FONTS).map(k => { const f = J.fontFace(k); return [k, { label: f.label, family: f.family.replace(/"/g, ''), weight: f.weight, kind: f.kind }]; }));
   return clean;
 };
 })();
@@ -15746,8 +15832,8 @@ const tout = env => 1 - E.inCubic(env.pOut);
 const meas = (text, font, size, o) => J.measure(Object.assign({ text, font, size }, o || {}));
 const box = (x0, y0, x1, y1) => ({ x0, y0, x1, y1, cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, boxes: [] });
 const smallSize = env => J.clamp(U(env) * 0.024, 14, 34);
-const romajiOf = env => { if (/[A-Za-z]/.test(env.cut.text)) return null; const r = J.romaji(strip(env.cut.text)); return r ? r.toUpperCase() : null; };
-const hasLatin = t => /[A-Za-z]/.test(t);
+const romajiOf = env => { if (J.RE_LATIN.test(env.cut.text)) return null; const r = J.romaji(strip(env.cut.text)); return r ? r.toUpperCase() : null; };
+const hasLatin = t => J.RE_LATIN.test(t);
 /* text as one run: latin keeps single word spaces, Japanese drops them */
 const flat = t => (hasLatin(t) ? String(t || '').trim().replace(/\s+/g, ' ') : strip(t));
 /* readable text colour on a plate, preferring the scheme's bg / fg */
@@ -16041,7 +16127,7 @@ reg('staircase', {
   name: '階段', tags: ['graphic', 'pop', 'editorial'], w: 1, fits: n => n >= 2 && n <= 18,
   plan: (rng, cut, st) => {
     const port = cut.H > cut.W * 1.08, n = cut.n;
-    const latin = /[A-Za-z]/.test(cut.text);
+    const latin = J.RE_LATIN.test(cut.text);
     const units = latin ? splitK(cut.text, port ? 6 : 4)
       : port ? (n <= 9 ? charUnits(cut.text) : splitK(cut.text, Math.min(6, Math.ceil(n / 2.6))))
       : (n <= 6 ? charUnits(cut.text) : splitK(cut.text, n <= 10 ? 3 : 4));
@@ -17278,7 +17364,7 @@ reg('filmstrip', {
    ====================================================================== */
 reg('quote', {
   name: '引用', tags: ['editorial', 'emotional', 'calm'], w: 1, emph: 1.2, enterBias: { blur: 1.4, type: 1.3, wipe: 1.2 }, fits: n => n <= 20,
-  plan: (rng, cut, st) => ({ font: rng.pick(fontsOf(st, ['serif', 'display'])), markFont: rng.pick(fontsOf(st, ['serif'])), marks: /[A-Za-z]/.test(cut.text) ? 'latin' : rng.pick(['kagi', 'double', 'kagi']), markC: rng.pick(['accent', 'sub']), attrib: rng.chance(0.75) }),
+  plan: (rng, cut, st) => ({ font: rng.pick(fontsOf(st, ['serif', 'display'])), markFont: rng.pick(fontsOf(st, ['serif'])), marks: J.RE_LATIN.test(cut.text) ? 'latin' : rng.pick(['kagi', 'double', 'kagi']), markC: rng.pick(['accent', 'sub']), attrib: rng.chance(0.75) }),
   render(env) {
     const { W, H, sc } = env, p = env.cut.params, u = U(env), port = isPort(env);
     const text = brk(env.cut.text.trim(), port ? 6 : 11);
@@ -18063,7 +18149,7 @@ function buildCloud(env, mt, size) {
   let acc = 0;
   for (let k = 0; k < 70 && out.length < 44; k++) {
     const word = pool[k % pool.length];
-    const latin = /[A-Za-z]/.test(word);
+    const latin = J.RE_LATIN.test(word);
     const vertical = !latin && J.glyphCount(word) <= 6 && J.r(s, k, 3) < Pm.vert;
     const tier = Math.pow(0.95, out.length);
     let fs = Math.max(M * 0.018, Math.min(W * 0.4 / Math.max(1.5, J.glyphCount(word)), size * 0.6, M * 0.125 * tier * (0.65 + 0.7 * J.r(s, k, 4))));
@@ -19556,7 +19642,7 @@ const tout = env => 1 - E.inCubic(env.pOut);
 const meas = (text, font, size, o) => J.measure(Object.assign({ text, font, size }, o || {}));
 const box = (x0, y0, x1, y1) => ({ x0, y0, x1, y1, cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, boxes: [] });
 const smallSize = env => J.clamp(U(env) * 0.024, 14, 34);
-const hasLatin = t => /[A-Za-z]/.test(t);
+const hasLatin = t => J.RE_LATIN.test(t);
 const flat = t => (hasLatin(t) ? String(t || '').trim().replace(/\s+/g, ' ') : strip(t));
 /* vertical-setting copy: Japanese drops spaces, latin keeps single word gaps */
 const vtext = t => (hasLatin(t) ? flat(t) : strip(t));
@@ -22927,7 +23013,7 @@ const reg = (key, def) => J.register('layout', key, def, P);
 const U = env => Math.min(env.W, env.H);
 const isPort = env => env.H > env.W * 1.08;
 const strip = t => String(t || '').replace(/\s+/g, '');
-const hasLatin = t => /[A-Za-z]/.test(t);
+const hasLatin = t => J.RE_LATIN.test(t);
 /* text as one run: latin keeps single word spaces, Japanese drops them */
 const flat = t => (hasLatin(t) ? String(t || '').trim().replace(/\s+/g, ' ') : strip(t));
 /* glyph slots keeping single word gaps (latin lyrics): a ' ' slot is left empty */
@@ -22975,7 +23061,7 @@ const adv = (font, ch) => (ch === ' ' ? 0.34 : J.metrics.adv(font, ch));
 /* ---- chunking: k balanced groups of words (J.chunkText / latin words), long words split at natural points ---- */
 const splitWord = w => {
   const n = [...w].length;
-  if (/[A-Za-z]/.test(w)) {
+  if (J.RE_LATIN.test(w)) {
     if (/[^\x00-\x7F]/.test(w)) { const c = J.chunkText(w).filter(Boolean); if (c.length > 1) return c; }
     return n > 10 ? [w.slice(0, Math.ceil(w.length / 2)), w.slice(Math.ceil(w.length / 2))] : [w];
   }
@@ -29046,7 +29132,7 @@ async function ensureFonts() {
 // style thumbnails need two glyphs of every style's display face — fetched only once the style grid is actually shown
 function loadThumbFonts() {
   if (thumbFonts || !$('styleGrid').offsetParent) return;
-  thumbFonts = J.ensureFonts('JIZURA', [...new Set(J.STYLE_ORDER.map(k => J.STYLES[k].fonts.display[0]))]).then(() => drawStyleGrid()).catch(() => {});
+  thumbFonts = J.ensureFonts('Lyric', [...new Set(J.STYLE_ORDER.map(k => J.STYLES[k].fonts.display[0]))]).then(() => drawStyleGrid()).catch(() => {});
 }
 function showMsg(m) { const el = $('viewMsg'); if (!m) { el.hidden = true; return; } el.textContent = m; el.hidden = false; }
 
@@ -29246,15 +29332,15 @@ function drawStyleGrid() {
     st.schemes.slice(1, 4).forEach((s2, i) => { x.fillStyle = s2.bg; x.fillRect(192 - 14 * (i + 1), 0, 14, 10); });
     const f = st.fonts.display[0];
     x.font = J.fontCSS(f, 46); x.textAlign = 'center'; x.textBaseline = 'middle';
-    x.fillStyle = sc.ghostB; x.fillText('JIZURA', 96 - 3, 54 - 1);
-    x.fillStyle = sc.ghostA; x.fillText('JIZURA', 96 + 3, 54 + 2);
-    x.fillStyle = sc.fg; x.fillText('JIZURA', 96, 54);
+    x.fillStyle = sc.ghostB; x.fillText('Lyric', 96 - 3, 54 - 1);
+    x.fillStyle = sc.ghostA; x.fillText('Lyric', 96 + 3, 54 + 2);
+    x.fillStyle = sc.fg; x.fillText('Lyric', 96, 54);
     x.fillStyle = sc.accent; x.fillRect(12, 90, 30, 4);
     x.font = J.fontCSS('mono', 9); x.textAlign = 'left'; x.fillStyle = sc.sub; x.fillText(k.toUpperCase(), 48, 93);
   });
 }
 function fontSelectOptions(sel) {
-  return '<option value="">Style default</option>' + Object.entries(J.FONTS).map(([k, f]) => `<option value="${k}" ${sel === k ? 'selected' : ''}>${escapeHtml(f.label)}</option>`).join('');
+  return '<option value="">Style default</option>' + Object.entries(J.FONTS).map(([k, f]) => `<option value="${k}" ${sel === k ? 'selected' : ''}>${escapeHtml(J.fontLabel(k))}</option>`).join('');
 }
 function renderFontRoles() {
   const box = $('fontRoles'); box.innerHTML = '';
@@ -29381,7 +29467,7 @@ function showNow() {
   const P = S.project, sc = S.plan.style.schemes[0];
   const moodName = P.mood && J.MOODS[P.mood] ? J.MOODS[P.mood].name : 'Custom';
   const fk = S.plan.style.fonts.display[0];
-  const fontName = J.FONTS[fk] ? J.FONTS[fk].label : fk;
+  const fontName = J.fontLabel(fk);
   const cuts = S.plan.cuts.filter(c => c.line >= 0 && c.layout !== 'interlude');
   const kinds = new Set(cuts.map(c => c.layout)).size;
   const row = (k, v) => `<div class="now-row"><span class="k">${k}</span><span class="v">${v}</span></div>`;
@@ -29716,6 +29802,214 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 J.ui = S;
 // hooks for hosts that embed the app (the After Effects CEP panel)
 J.uiApi = { toast, replan, syncUI, pause, seek, flushSave, loadAudioFile, restartPreview };
+})();
+
+/* ============================================================
+   Lyric Motion — AI helpers (local server only)
+   1. auto lyrics: audio -> 16 kHz mono WAV -> server.py /api/transcribe (Groq Whisper)
+                   -> /api/lines (raw segments, or DeepSeek clean-up) -> LRC in the lyrics box
+   2. AI format:   lyrics box text -> /api/format (DeepSeek: spaces, diacritics, line breaks, app syntax) -> lyrics box
+   3. AI direct:   J.aiCandidates -> /api/direct (TypeSafe Jev: per-line template / emphasis / climax judgments)
+                   -> project.ai, which the planner mixes into its seeded random picks (see 08_planner.js)
+   Appears only when the page is served by server.py (GET /api/status answers);
+   on GitHub Pages / file:// nothing is added.
+   ============================================================ */
+(() => {
+'use strict';
+if (typeof document === 'undefined' || typeof document.getElementById !== 'function' || !document.getElementById('app')) return;   // Node tools (AE data export) load src/ with a stub document
+if (typeof location === 'undefined' || location.protocol === 'file:') return;
+const $ = id => document.getElementById(id);
+
+/* AudioBuffer -> 16 kHz mono 16-bit WAV (what Whisper uses anyway; ~1.9 MB per minute) */
+async function toWav16k(buffer) {
+  const SR = 16000;
+  const oc = new OfflineAudioContext(1, Math.ceil(buffer.duration * SR), SR);
+  const src = oc.createBufferSource(); src.buffer = buffer; src.connect(oc.destination); src.start();
+  const pcm = (await oc.startRendering()).getChannelData(0);
+  const out = new DataView(new ArrayBuffer(44 + pcm.length * 2));
+  const str = (o, s) => { for (let i = 0; i < s.length; i++) out.setUint8(o + i, s.charCodeAt(i)); };
+  str(0, 'RIFF'); out.setUint32(4, 36 + pcm.length * 2, true); str(8, 'WAVE'); str(12, 'fmt ');
+  out.setUint32(16, 16, true); out.setUint16(20, 1, true); out.setUint16(22, 1, true);
+  out.setUint32(24, SR, true); out.setUint32(28, SR * 2, true); out.setUint16(32, 2, true); out.setUint16(34, 16, true);
+  str(36, 'data'); out.setUint32(40, pcm.length * 2, true);
+  for (let i = 0; i < pcm.length; i++) out.setInt16(44 + i * 2, Math.max(-1, Math.min(1, pcm[i])) * 0x7fff, true);
+  return new Blob([out.buffer], { type: 'audio/wav' });
+}
+
+async function api(path, body, headers) {
+  const r = await fetch(path, { method: 'POST', body, headers });
+  let j = null; try { j = await r.json(); } catch (e) {}
+  if (!r.ok) throw new Error((j && j.error) || `HTTP ${r.status}`);
+  return j;
+}
+
+const lrcTime = t => { t = Math.max(0, t); const m = Math.floor(t / 60), s = t - m * 60; return `[${String(m).padStart(2, '0')}:${s.toFixed(2).padStart(5, '0')}]`; };
+
+function mount(status) {
+  const anchor = $('audioName') && $('audioName').closest('.sec');
+  if (!anchor) return;
+  const sec = document.createElement('div');
+  sec.className = 'sec';
+  sec.innerHTML = `
+    <div class="sec-h"><h2>Lời tự động (Groq)</h2></div>
+    <div class="muted" style="font-size:12px">Nhận dạng giọng hát/nói trong audio rồi điền lời có mốc thời gian (LRC) vào ô lời.</div>
+    <div class="fields">
+      <label class="field">Loại<select id="trKind"><option value="song">Bài hát</option><option value="talk">Nói chuyện</option></select></label>
+      <label class="field">Ngôn ngữ<input id="trLang" type="text" maxlength="5" placeholder="tự nhận"></label>
+    </div>
+    <label class="row" style="gap:6px"><input id="trLlm" type="checkbox"> Sửa lỗi bằng DeepSeek</label>
+    <details><summary class="muted" style="cursor:pointer;font-size:12px">Lời chuẩn (tuỳ chọn, giúp chính xác hơn)</summary>
+      <textarea id="trRef" rows="5" spellcheck="false" placeholder="Dán lời gốc vào đây: chữ lấy từ lời gốc, thời gian lấy từ audio"></textarea>
+    </details>
+    <div class="row"><button id="trGo" class="accent">Tạo lời từ audio</button><input id="trFile" type="file" accept="audio/*,video/*" hidden></div>
+    <div id="trMsg" class="muted" style="font-size:12px"></div>`;
+  anchor.after(sec);
+  $('trLang').value = status.language || '';
+  $('trLlm').checked = status.deepseek; $('trLlm').disabled = !status.deepseek;
+  if (!status.deepseek) $('trLlm').parentElement.title = 'Chưa có DEEPSEEK_API_KEY trong .env';
+  if (!status.groq) { $('trGo').disabled = true; $('trMsg').textContent = 'Chưa có GROQ_API_KEY trong .env. Điền key rồi khởi động lại server.py.'; }
+  $('trGo').addEventListener('click', () => { if (J.ui.audio) run(); else $('trFile').click(); });
+  $('trFile').addEventListener('change', async e => {
+    const f = e.target.files && e.target.files[0]; e.target.value = '';
+    if (f && await J.uiApi.loadAudioFile(f)) run();
+  });
+}
+
+let busy = false;
+async function run() {
+  if (busy) return;
+  const msg = t => { $('trMsg').textContent = t; };
+  const audio = J.ui.audio;
+  if (!audio || !audio.buffer) { msg('Hãy tải audio trước.'); return; }
+  busy = true; $('trGo').disabled = true;
+  const t0 = performance.now();
+  try {
+    msg('Đang chuẩn bị audio…');
+    const wav = await toWav16k(audio.buffer);
+    if (wav.size > 25 * 1024 * 1024) throw new Error('Audio dài quá (giới hạn khoảng 13 phút).');
+    const ref = $('trRef').value.trim();
+    msg(`Đang nhận dạng bằng Groq (${(wav.size / 1048576).toFixed(1)} MB)…`);
+    const tr = await api('/api/transcribe', wav, {
+      'Content-Type': 'audio/wav', 'X-Filename': encodeURIComponent((audio.name || 'audio').replace(/\.[^.]+$/, '') + '.wav'),
+      'X-Language': encodeURIComponent($('trLang').value.trim()), 'X-Prompt': encodeURIComponent(ref.slice(0, 800)),
+    });
+    const llm = $('trLlm').checked;
+    msg(llm ? `Đã nhận ${tr.words.length} từ. DeepSeek đang sửa lời…` : `Đã nhận ${tr.words.length} từ. Đang tách dòng…`);
+    const { lines } = await api('/api/lines', JSON.stringify({ transcript: tr, llm, kind: $('trKind').value, reference: ref }), { 'Content-Type': 'application/json' });
+    if (!lines.length) throw new Error('Không nhận ra lời nào trong audio.');
+    const box = $('lyrics');
+    box.value = lines.map(l => lrcTime(l.start) + l.text.normalize('NFC')).join('\n');
+    J.ui.project.timing.lineTimes = {};
+    box.dispatchEvent(new Event('input'));
+    msg(`Xong: ${lines.length} dòng (ngôn ngữ: ${tr.language || '?'}, ${((performance.now() - t0) / 1000).toFixed(1)} giây). Có thể sửa trực tiếp trong ô lời.`);
+  } catch (err) {
+    msg('Lỗi: ' + err.message);
+  } finally { busy = false; $('trGo').disabled = false; }
+}
+
+/* ---------- AI format button in the lyrics header ---------- */
+function mountFormat(status) {
+  const syntaxBtn = $('btnSyntax'), box = $('lyrics');
+  if (!syntaxBtn || !box) return;
+  const btn = document.createElement('button');
+  btn.id = 'btnAiFormat'; btn.className = 'accent small'; btn.textContent = '✨ AI xử lý';
+  btn.title = status.deepseek ? 'DeepSeek tách dòng, thêm dấu cách, dấu tiếng Việt và cú pháp hiệu ứng theo ngữ cảnh' : 'Chưa có DEEPSEEK_API_KEY trong .env';
+  btn.disabled = !status.deepseek;
+  const wrap = document.createElement('div'); wrap.className = 'row'; wrap.style.gap = '6px';
+  syntaxBtn.replaceWith(wrap); wrap.append(btn, syntaxBtn);
+  const bar = document.createElement('div');
+  bar.className = 'row muted'; bar.style.fontSize = '12px'; bar.hidden = true;
+  bar.innerHTML = '<span id="aiFmtMsg"></span><button id="aiFmtUndo" class="ghost small" hidden>Hoàn tác</button>';
+  box.after(bar);
+  let before = null;
+  const setText = t => { box.value = t; box.dispatchEvent(new Event('input')); };
+  $('aiFmtUndo').addEventListener('click', () => {
+    if (before == null) return;
+    setText(before); before = null;
+    $('aiFmtMsg').textContent = 'Đã khôi phục nội dung cũ.'; $('aiFmtUndo').hidden = true;
+  });
+  btn.addEventListener('click', async () => {
+    const text = box.value.trim();
+    bar.hidden = false; $('aiFmtUndo').hidden = true;
+    if (!text) { $('aiFmtMsg').textContent = 'Hãy nhập hoặc dán nội dung trước.'; return; }
+    btn.disabled = true; $('aiFmtMsg').textContent = 'DeepSeek đang đọc ngữ cảnh và tách dòng…';
+    const t0 = performance.now();
+    try {
+      const kind = $('trKind') ? $('trKind').value : 'song';
+      const r = await api('/api/format', JSON.stringify({ text: box.value, kind }), { 'Content-Type': 'application/json' });
+      before = box.value;
+      setText(r.text.normalize('NFC'));
+      const n = r.text.split('\n').filter(l => l.trim() && !l.trim().startsWith('#')).length;
+      $('aiFmtMsg').textContent = `Xong: ${n} dòng (${((performance.now() - t0) / 1000).toFixed(1)} giây).`;
+      $('aiFmtUndo').hidden = false;
+    } catch (err) {
+      $('aiFmtMsg').textContent = 'Lỗi: ' + err.message;
+    } finally { btn.disabled = !status.deepseek; }
+  });
+}
+
+/* ---------- AI direction panel (TypeSafe Jev) ---------- */
+const EMPH_MIN = 0.5, EMPH_SHARE = 0.4;     // emphasise confident picks only, on at most 40% of the lines
+const CLIMAX_MIN = 0.7;                     // flash + shake on the clearest peaks, at most 3 (fewer on short texts)
+
+function mountDirect(status, after) {
+  const sec = document.createElement('div');
+  sec.className = 'sec';
+  sec.innerHTML = `
+    <div class="sec-h"><h2>AI chọn hiệu ứng (Jev)</h2></div>
+    <div class="muted" style="font-size:12px">Đọc nghĩa từng dòng để ưu tiên bố cục và chuyển động hợp hình ảnh (mưa, vỡ, xoay, đếm…), chọn từ nhấn mạnh và câu cao trào. Vẫn giữ ngẫu nhiên cho những dòng không có hình ảnh rõ.</div>
+    <label class="row" style="gap:6px"><input id="aiOn" type="checkbox"> Dùng gợi ý AI khi dựng</label>
+    <div class="row"><button id="aiGo" class="accent">Phân tích lời</button></div>
+    <div id="aiMsg" class="muted" style="font-size:12px"></div>`;
+  after.after(sec);
+  const P = () => J.ui.project;
+  const msg = t => { $('aiMsg').textContent = t; };
+  const refresh = () => {
+    const ai = P().ai;
+    $('aiOn').checked = !!ai && P().aiOn !== false; $('aiOn').disabled = !ai;
+    if (!status.typesafe) { $('aiGo').disabled = true; msg('Chưa có TYPESAFE_API_KEY trong .env.'); return; }
+    if (!ai) { msg('Chưa phân tích.'); return; }
+    const lines = J.parseLyrics(P().lyrics).lines;
+    const live = lines.filter((l, i) => ai.lines[i] && ai.lines[i].text === l.text).length;
+    msg(live === lines.length ? `Đang áp dụng cho ${live} dòng.` : `Còn hiệu lực ${live}/${lines.length} dòng (lời đã sửa). Bấm Phân tích lời để cập nhật.`);
+  };
+  $('aiOn').addEventListener('change', e => { P().aiOn = e.target.checked; J.uiApi.replan(); J.uiApi.flushSave(); refresh(); });
+  let timer = 0;
+  $('lyrics').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(refresh, 400); });
+  $('aiGo').addEventListener('click', async () => {
+    const cands = J.aiCandidates(P());
+    if (!cands.length) { msg('Hãy nhập lời trước.'); return; }
+    $('aiGo').disabled = true; msg(`Jev đang đọc ${cands.length} dòng…`);
+    const t0 = performance.now();
+    try {
+      const r = await api('/api/direct', JSON.stringify({ lines: cands, language: J.VI ? 'Vietnamese' : undefined }), { 'Content-Type': 'application/json' });
+      // code keeps the policy: which emphasis / climax answers are strong enough to act on
+      const emphOk = new Set(r.lines.map((a, i) => [i, a]).filter(([i, a]) => a.emph && a.emphP >= EMPH_MIN && !cands[i].userEmph)
+        .sort((x, y) => y[1].emphP - x[1].emphP).slice(0, Math.ceil(cands.length * EMPH_SHARE)).map(([i]) => i));
+      const nClimax = Math.max(1, Math.min(3, Math.ceil(cands.length / 8)));
+      const climaxOk = new Set(r.lines.map((a, i) => [i, a.climax || 0]).filter(([i, p]) => p >= CLIMAX_MIN && !cands[i].userImpact)
+        .sort((x, y) => y[1] - x[1]).slice(0, nClimax).map(([i]) => i));
+      P().ai = { v: 1, model: r.model, at: Date.now(), lines: r.lines.map((a, i) => ({
+        text: cands[i].text, layout: a.layout, enter: a.enter, exit: a.exit,
+        emph: emphOk.has(i) ? a.emph : null, impact: climaxOk.has(i),
+      })) };
+      P().aiOn = true;
+      J.uiApi.replan(); J.uiApi.flushSave(); refresh();
+      const matched = r.lines.filter(a => a.layout && (a.layout.none || 0) < 0.5).length;
+      msg(`Xong (${((performance.now() - t0) / 1000).toFixed(1)} giây, ${r.model}): ${matched}/${cands.length} dòng có bố cục hợp hình ảnh, ${emphOk.size} từ nhấn mạnh, ${climaxOk.size} câu cao trào.`);
+    } catch (err) {
+      msg('Lỗi: ' + err.message);
+    } finally { $('aiGo').disabled = !status.typesafe; }
+  });
+  refresh();
+}
+
+fetch('/api/status').then(r => (r.ok ? r.json() : null)).then(s => {
+  if (!s || !('groq' in s)) return;
+  mountFormat(s); mount(s);
+  const groqSec = $('trGo') && $('trGo').closest('.sec');
+  if (groqSec) mountDirect(s, groqSec);
+}).catch(() => {});
 })();
 
 </script>

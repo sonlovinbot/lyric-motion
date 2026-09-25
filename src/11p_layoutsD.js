@@ -9,7 +9,7 @@ const reg = (key, def) => J.register('layout', key, def, P);
 const U = env => Math.min(env.W, env.H);
 const isPort = env => env.H > env.W * 1.08;
 const strip = t => String(t || '').replace(/\s+/g, '');
-const hasLatin = t => /[A-Za-z]/.test(t);
+const hasLatin = t => J.RE_LATIN.test(t);
 /* text as one run: latin keeps single word spaces, Japanese drops them */
 const flat = t => (hasLatin(t) ? String(t || '').trim().replace(/\s+/g, ' ') : strip(t));
 /* glyph slots keeping single word gaps (latin lyrics): a ' ' slot is left empty */
@@ -57,7 +57,7 @@ const adv = (font, ch) => (ch === ' ' ? 0.34 : J.metrics.adv(font, ch));
 /* ---- chunking: k balanced groups of words (J.chunkText / latin words), long words split at natural points ---- */
 const splitWord = w => {
   const n = [...w].length;
-  if (/[A-Za-z]/.test(w)) {
+  if (J.RE_LATIN.test(w)) {
     if (/[^\x00-\x7F]/.test(w)) { const c = J.chunkText(w).filter(Boolean); if (c.length > 1) return c; }
     return n > 10 ? [w.slice(0, Math.ceil(w.length / 2)), w.slice(Math.ceil(w.length / 2))] : [w];
   }
