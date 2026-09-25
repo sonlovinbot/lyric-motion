@@ -4,6 +4,8 @@
 
 Dán lời hoặc tải lên một bài hát, Lyric Motion tự chia câu, dựng từng cảnh chữ động khớp nhịp và xuất MP4 cho TikTok, Reels, YouTube. Hơn 700 hiệu ứng, 24 phong cách, bấm một nút là ra một phương án mới. Bản này bổ sung giao diện tiếng Việt, hỗ trợ font tiếng Việt đầy đủ và các công cụ AI: nhận dạng lời từ audio, xử lý lời, và chọn hiệu ứng theo nghĩa của từng câu.
 
+**▶ Dùng ngay: <https://sonlovinbot.github.io/lyric-motion/>** (chạy trên trình duyệt, không cần cài đặt)
+
 [English guide](README.en.md) · [日本語](README.ja.md)
 
 > Lyric Motion được phát triển dựa trên mã nguồn mở [JIZURA](https://github.com/852wa/JIZURA) của 852wa (giấy phép MIT).
@@ -13,8 +15,8 @@ Dán lời hoặc tải lên một bài hát, Lyric Motion tự chia câu, dựn
 ## Tính năng mới so với JIZURA
 
 ### 1. Giao diện tiếng Việt, mở mặc định
-- Toàn bộ giao diện, 707 tên hiệu ứng, 24 phong cách và lời mẫu đã được dịch sang tiếng Việt (`vi/`).
-- Chạy bằng `server.py` thì trang chủ mở thẳng bản tiếng Việt. Vẫn giữ bản tiếng Nhật và tiếng Anh, chuyển qua lại bằng nút ngôn ngữ trên thanh tiêu đề.
+- Toàn bộ giao diện, 707 tên hiệu ứng, 24 phong cách và lời mẫu đã được dịch sang tiếng Việt.
+- Bản tiếng Việt là trang chính (`index.html`). Bản tiếng Nhật ở `ja/`, tiếng Anh ở `en/`, chuyển qua lại bằng nút ngôn ngữ trên thanh tiêu đề.
 
 ### 2. Hiển thị tiếng Việt chuẩn dấu
 Bản gốc dùng font tiếng Nhật. **12/23 font không có bộ ký tự tiếng Việt**, nên chữ bị mất dấu thanh ("ẤY" hiện thành "ÂY", "ỄNH" thành "ÊNH") hoặc lẫn hai kiểu chữ trong một từ.
@@ -65,7 +67,7 @@ python3 server.py         # mở http://localhost:8765/
 | `TYPESAFE_API_KEY` | AI chọn hiệu ứng (Jev) | Chỉ khi dùng tính năng này |
 | `TRANSCRIBE_LANGUAGE` | Ngôn ngữ nhận dạng mặc định (`vi`) | Không |
 
-Không có key nào thì app vẫn chạy đầy đủ các tính năng dựng và xuất video. Các khung AI chỉ hiện khi chạy qua `server.py`. Mở trực tiếp file `vi/index.html` cũng dùng được, nhưng không có AI.
+Không có key nào thì app vẫn chạy đầy đủ các tính năng dựng và xuất video. Các khung AI chỉ hiện khi chạy qua `server.py`: bản trên GitHub Pages và file `index.html` mở trực tiếp dùng được mọi tính năng khác, trừ AI (vì cần server giữ API key).
 
 ## Cú pháp lời
 
@@ -87,7 +89,7 @@ Không có key nào thì app vẫn chạy đầy đủ các tính năng dựng v
 ## Build
 
 ```sh
-python3 build.py                           # index.html (JA), en/index.html, vi/index.html
+python3 build.py                           # index.html (VI), ja/index.html, en/index.html
 node tools/export_template_catalog.js      # sau khi thêm/đổi tên hiệu ứng: cập nhật tên cho Jev
 ```
 

@@ -1,10 +1,10 @@
 # Lyric Motion — Kinetic Lyric Video Maker
 
-*Lyric Motion is built on [JIZURA](https://github.com/852wa/JIZURA) by 852wa (MIT License). It adds a Vietnamese edition (`vi/`, served by default by `server.py`), Vietnamese font support and local auto-lyrics. The rest of this guide describes the upstream JIZURA features and panels.*
+*Lyric Motion is built on [JIZURA](https://github.com/852wa/JIZURA) by 852wa (MIT License). It adds a Vietnamese edition (now the root `index.html`; Japanese moved to `ja/`), Vietnamese font support and local auto-lyrics. The rest of this guide describes the upstream JIZURA features and panels.*
 
 Turn lyrics into animated lyric videos in your browser. JIZURA combines layouts, entrances, holds, exits, decorations, text treatments, backgrounds, camera moves, effects and transitions. Change the seed or press **Create a variation** to explore another arrangement.
 
-**[Open the English app](https://852wa.github.io/JIZURA/en/)** · [日本語版](https://852wa.github.io/JIZURA/) · [Japanese guide](README.ja.md) · [Hướng dẫn tiếng Việt](README.md)
+**[Open the English app](https://sonlovinbot.github.io/lyric-motion/en/)** · [Tiếng Việt](https://sonlovinbot.github.io/lyric-motion/) · [日本語版](https://sonlovinbot.github.io/lyric-motion/ja/) · [Japanese guide](README.ja.md) · [Hướng dẫn tiếng Việt](README.md)
 
 The English and Japanese browser editions share the same project format and saved browser data. Use the language links at the top of the editor to switch editions without changing your lyrics or settings. English After Effects panels are available as [ScriptUI](https://852wa.github.io/JIZURA/JIZURA_AE_en.jsx) and [CEP](https://852wa.github.io/JIZURA/JIZURA_CEP_en.zip) downloads. The AE JSON format is the same in both languages.
 

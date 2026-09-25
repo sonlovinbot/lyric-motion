@@ -301,8 +301,6 @@ class Handler(SimpleHTTPRequestHandler):
         path = self.path.split('?')[0]
         if any(p.startswith('.') for p in path.split('/') if p):          # never serve .env / .git
             return self.send_error(404)
-        if path == '/':                                                     # Vietnamese edition by default (ja: /index.html, en: /en/)
-            self.send_response(302); self.send_header('Location', '/vi/'); self.end_headers(); return
         if path == '/api/status':
             return self.send_json(200, {'groq': bool(cfg('GROQ_API_KEY')), 'deepseek': bool(cfg('DEEPSEEK_API_KEY')), 'typesafe': bool(cfg('TYPESAFE_API_KEY')),
                                         'language': cfg('TRANSCRIBE_LANGUAGE'), 'groqModel': cfg('GROQ_MODEL', 'whisper-large-v3'),

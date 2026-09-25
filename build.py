@@ -1,5 +1,5 @@
 """Build the Japanese, English and Vietnamese single-file browser editions from src/, app/ and vendor/.
-usage: python3 build.py            -> index.html, en/index.html and vi/index.html (GitHub Pages)
+usage: python3 build.py            -> index.html (Vietnamese), ja/index.html and en/index.html (GitHub Pages)
        python3 build.py --dev      -> also dev/www/jizura.js + dev/www/test.html for the test tools"""
 import glob, os, sys
 from app.english import localize_body, localize_js, replace_copy
@@ -11,9 +11,9 @@ sources = sorted(glob.glob('src/*.js'))
 js = '\n'.join(read(f) for f in sources)
 mux = '/*! mp4-muxer v5.2.2 | MIT License | (c) 2023 Vanilagy | see THIRD_PARTY_NOTICES.md */\n' + read('vendor/mp4-muxer.min.js')
 LANGS = {   # lang: (folder, nav label, title, description, nav aria-label)
-    'ja': ('', '日本語', 'Lyric Motion', '歌詞を入れると文字PV（リリックモーション）を自動で組み立てて MP4 に書き出すブラウザアプリ', '言語'),
+    'vi': ('', 'Tiếng Việt', 'Lyric Motion — Tạo video chữ chuyển động', 'Nhập lời bài hát, tự động dựng video chữ chuyển động và xuất MP4 ngay trên trình duyệt.', 'Ngôn ngữ'),
+    'ja': ('ja/', '日本語', 'Lyric Motion', '歌詞を入れると文字PV（リリックモーション）を自動で組み立てて MP4 に書き出すブラウザアプリ', '言語'),
     'en': ('en/', 'English', 'Lyric Motion — Kinetic Lyric Video Maker', 'Turn lyrics into animated lyric videos in your browser and export MP4.', 'Language'),
-    'vi': ('vi/', 'Tiếng Việt', 'Lyric Motion — Tạo video chữ chuyển động', 'Nhập lời bài hát, tự động dựng video chữ chuyển động và xuất MP4 ngay trên trình duyệt.', 'Ngôn ngữ'),
 }
 def vi_js(source, filename):
     if filename.endswith('12_ui.js'): return replace_copy(source, vietnamese.UI)
@@ -47,9 +47,9 @@ def build(lang):
 <title>{title}</title>
 <meta name="description" content="{description}">
 <link rel="canonical" href="{canonical}">
-<link rel="alternate" hreflang="ja" href="https://sonlovinbot.github.io/lyric-motion/">
+<link rel="alternate" hreflang="ja" href="https://sonlovinbot.github.io/lyric-motion/ja/">
 <link rel="alternate" hreflang="en" href="https://sonlovinbot.github.io/lyric-motion/en/">
-<link rel="alternate" hreflang="vi" href="https://sonlovinbot.github.io/lyric-motion/vi/">
+<link rel="alternate" hreflang="vi" href="https://sonlovinbot.github.io/lyric-motion/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{description}">
@@ -76,9 +76,9 @@ def build(lang):
     os.makedirs(os.path.dirname(target) or '.', exist_ok=True)
     open(target, 'w', encoding='utf-8').write(html)
     print(target, len(html), 'bytes')
+build('vi')
 build('ja')
 build('en')
-build('vi')
 if '--dev' in sys.argv:
     os.makedirs('dev/www', exist_ok=True)
     open('dev/www/jizura.js', 'w', encoding='utf-8').write(js)
